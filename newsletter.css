@@ -1,5 +1,18 @@
 @import url('./global.css');
 
+
+:root {
+    --newsletter-width: 830px;
+    --newsletter-width-sm: 85vw;
+    --newsletter-body-width: 100%;
+    --newsletter-body-width-sm: 80%;
+    --newsletter-height: 325px;
+    --newsletter-height-sm: auto;
+    --icon-close-width: 25px;
+    --btn-primary-height: 46px;
+    --btn-primary-height-sm: 40px;
+}
+
 .newsletter {
     --black: #353535;
     --border-width: 5px;
@@ -19,8 +32,8 @@ body {
 
 
 .newsletter {
-    width: 830px;
-    height: 325px;
+    width: var(--newsletter-width);
+    height: var(--newsletter-height);
     border: var(--border-width) solid var(--black);
     background-image: url("/assets/images/wallpaper.png");
     background-size: cover;
@@ -45,8 +58,8 @@ body {
 }
 
 .icon-close {
-    width: 25px;
-    height: 25px;
+    width: var(--icon-close-width);
+    height: var(--icon-close-width);
     background-image: url("/assets/icons/close.svg");
     background-size: contain;
     background-position: center;
@@ -55,7 +68,7 @@ body {
 
 .newsletter__body {
     max-width: 381px;
-    width: 100%;
+    width: var(--newsletter-body-width);
     min-height: 100px;
     display: flex;
     flex-direction: column;
@@ -120,7 +133,7 @@ body {
 .btn-primary {
     --ff-size: 18px;
     min-width: 145px;
-    height: 46px;
+    height: var(--btn-primary-height);
     padding-inline: 23px;
     background-color: var(--red);
     font-family: 'Open Sans';
@@ -140,11 +153,12 @@ body {
 
 
 /* 680px */
-@media only screen and (max-width: 480px) {
+@media only screen and (max-width: 780px) {
     .newsletter {
-        width: 85vw;
-        height: auto;
+        width: var(--newsletter-width-sm);
+        height: var(--newsletter-height-sm);
         background-position: center;
+        margin-top: -40%;
     }
 
     .newsletter__title {
@@ -161,9 +175,19 @@ body {
 
     .btn-primary {
         --ff-size: 14px;
+        height: var(--btn-primary-height-sm);
     }
 
     .newsletter__body {
-        width: 80%;
+        width: var(--newsletter-body-width-sm);
+    }
+}
+
+@media only screen and (max-width: 460px) {
+    .newsletter {
+        width: var(--newsletter-width-sm);
+        height: var(--newsletter-height-sm);
+        background-position: center;
+        margin-top: -110%;
     }
 }
