@@ -159,7 +159,7 @@ body {
         width: var(--newsletter-width-sm);
         height: var(--newsletter-height-sm);
         background-position: center;
-        margin-top: -40%;
+        margin-top: -25vh;
     }
 
     .newsletter__title {
