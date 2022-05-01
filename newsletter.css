@@ -9,6 +9,7 @@
     --newsletter-height: 325px;
     --newsletter-height-sm: auto;
     --icon-close-width: 25px;
+    --icon-close-width-sm: 25px;
     --btn-primary-height: 46px;
     --btn-primary-height-sm: 40px;
 }
@@ -181,6 +182,11 @@ body {
     .newsletter__body {
         width: var(--newsletter-body-width-sm);
     }
+
+    .icon-close { 
+        width: var(--icon-close-width-sm);
+        height: var(--icon-close-width-sm);
+    }
 }
 
 @media only screen and (max-width: 460px) {
@@ -188,6 +194,5 @@ body {
         width: var(--newsletter-width-sm);
         height: var(--newsletter-height-sm);
         background-position: center;
-        margin-top: -110%;
     }
 }
