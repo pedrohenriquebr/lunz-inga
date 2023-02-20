@@ -1,15 +1,37 @@
-*,
-*:after,
-*:before {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    text-decoration: none;
+// Apply the box-sizing border-box to all elements, including pseudo-elements
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
-button {
-    border: none;
-    background: none;
-    cursor: pointer;
-    outline: none;
+// Set margins and paddings to 0 for all elements, including pseudo-elements
+html, body, div, span, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+abbr, address, cite, code,
+del, dfn, em, img, ins, kbd, q, samp,
+small, strong, sub, sup, var,
+b, i,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+button::before, button::after {
+  margin: 0;
+  padding: 0;
+}
+
+// Remove default list styles for unordered and ordered lists
+ul, ol {
+  list-style: none;
+}
+
+// Remove text decoration from all elements, including pseudo-elements
+a, a::before, a::after {
+  text-decoration: none;
+}
+
+// Remove border, background and outline from buttons, including pseudo-elements
+button, button::before, button::after {
+  border: none;
+  background: none;
+  cursor: pointer;
+  outline: none;
 }
