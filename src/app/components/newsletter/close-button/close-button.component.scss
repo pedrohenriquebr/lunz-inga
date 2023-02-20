@@ -1,0 +1,59 @@
+@import "./../../../../styles";
+
+.btn-close {
+    --btn-close-max-width: 55px;
+    --btn-close-max-width-sm: 30px;
+    --btn-close-height: 40px;
+    --btn-close-height-sm: 35px;
+    --black: #353535;
+    --icon-close-width: 25px;
+    --icon-close-width-sm: 20px;
+    min-width: var(--btn-close-max-width);
+    padding-inline: 15px;
+    height: var(--btn-close-height);
+    background-color: var(--black);
+    border: 1px solid var(--black);
+    transition: background-color 430ms ease-out;
+
+    &__icon {
+        width: var(--icon-close-width);
+        height: var(--icon-close-width);
+        background-image: url("/assets/icons/close.svg");
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+        transition: background-image 430ms ease-out;
+    }
+
+    &:hover {
+        background-color: white;
+    }
+
+    &:hover &__icon {
+        background-image: url("/assets/icons/close-black.svg");
+    }
+}
+
+
+@media only screen and (max-width: 780px) {
+
+    .btn-close {
+        min-width: var(--btn-close-max-width-sm);
+        height: var(--btn-close-height-sm);
+
+        &__icon {
+            width: var(--icon-close-width-sm);
+            height: var(--icon-close-width-sm);
+        }
+    }
+
+}
+
+@media only screen and (max-width: 460px) {
+    .btn-close {
+        &__icon {
+            width: var(--icon-close-width-sm);
+            height: var(--icon-close-width-sm);
+        }
+    }
+}
