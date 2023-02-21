@@ -18,9 +18,6 @@
   --border-width: 5px;
   --text-color: white;
   --red: rgba(165, 42, 42, 1);
-}
-
-.newsletter {
   width: var(--newsletter-width);
   height: var(--newsletter-height);
   border: var(--border-width) solid var(--black);
@@ -93,7 +90,7 @@
     outline: none;
     border: none;
     font-size: var(--ff-size);
-    font-family: "Open Sans";
+    font-family: "Open Sans", sans-serif;
     font-style: normal;
     font-weight: 400;
   }
@@ -109,7 +106,7 @@
   height: var(--btn-primary-height);
   padding-inline: 23px;
   background-color: var(--red);
-  font-family: "Open Sans";
+  font-family: "Open Sans", sans-serif;
   font-weight: 700;
   font-size: var(--ff-size);
   text-transform: uppercase;

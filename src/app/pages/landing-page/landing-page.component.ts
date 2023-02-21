@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { NewsletterComponent } from 'src/app/components/newsletter/newsletter.component';
 import { CookieService } from 'ngx-cookie-service';
 import { CookiesNames } from 'src/app/config/cookiesNames.enum';

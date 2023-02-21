@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/core';
 
 @Component({
   selector: 'app-close-button',
@@ -6,16 +6,11 @@ import { Component, EventEmitter, OnInit, Output, ViewEncapsulation } from '@ang
   styleUrls: ['./close-button.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class CloseButtonComponent implements OnInit {
+export class CloseButtonComponent {
 
   @Output()
   close  = new EventEmitter();
   
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
   public handleClick(event: Event){
     this.close.emit();
   }
