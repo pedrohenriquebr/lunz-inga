@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  NEWSLETTER_DELAY: 3500
 };

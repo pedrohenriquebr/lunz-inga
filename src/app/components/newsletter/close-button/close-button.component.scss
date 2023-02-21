@@ -8,12 +8,13 @@
     --black: #353535;
     --icon-close-width: 25px;
     --icon-close-width-sm: 20px;
+    --btn-close-transition-delay: 400ms;
     min-width: var(--btn-close-max-width);
     padding-inline: 15px;
     height: var(--btn-close-height);
     background-color: var(--black);
     border: 1px solid var(--black);
-    transition: background-color 430ms ease-out;
+    transition: background-color var(--btn-close-transition-delay) ease-out;
 
     &__icon {
         width: var(--icon-close-width);
@@ -22,7 +23,7 @@
         background-size: contain;
         background-position: center;
         background-repeat: no-repeat;
-        transition: background-image 430ms ease-out;
+        transition: background-image var(--btn-close-transition-delay) ease-out;
     }
 
     &:hover {
