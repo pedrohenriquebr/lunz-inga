@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  NEWSLETTER_DELAY: 500
+  NEWSLETTER_DELAY: 1500
 };
 
 /*
