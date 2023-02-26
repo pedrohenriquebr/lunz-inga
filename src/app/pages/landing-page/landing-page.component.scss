@@ -1,1 +1,150 @@
 @import "./../../../styles";
+
+:host {
+    --primary-color: #484C7F;
+    --black: #353535;
+    min-height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.header {
+    width: 100%;
+    display: flex;
+
+    &__logo {
+        margin-left: 45.84px;
+        margin-right: 9px;
+        margin-top: 36px;
+        margin-bottom: 36px;
+        height: 39.39px;
+    }
+
+    
+    &__search-container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        background-color: var(--primary-color);
+        padding-top: 36px;
+        padding-left: 80px;
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 4% 100%);
+    }
+
+
+    .search-input {
+        display: flex;
+        background-color: white;
+        width: 51%;
+        height: 39px;
+        border-radius: 19px;
+        padding: 7px 11px 6px 11px;
+    }
+
+    .search-input input {
+        order: 1;
+        width: 100%;
+        outline: none;
+        border: none;
+        padding: 0px;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 1.2rem;
+        caret-color: var(--primary-color);
+        color: rgb(121, 121, 121);
+    }
+    
+    .search-input__lupe {
+        height: 1.5rem;
+        margin-right: 10px;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+    
+    
+    &__menu {
+        display: flex;
+        margin-top: 9px;
+        margin-bottom: 12px;
+        color: white;
+        font-family: 'Open Sans', sans-serif;
+        font-weight: bold;
+        font-size: 1rem;
+        gap: 13px;
+    }
+
+    &__submenu {
+        display: none;
+        position: absolute;
+    }
+
+    &__menu-item:hover {
+        cursor: pointer; 
+        color: #75A3BD;
+    }
+
+}
+
+.contact-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    height: 51px;
+    background-color: var(--black);
+
+    .text-wrapper:not(.click-cta-whatsapp) {
+        color: white;
+        font-weight: bold;
+        font-size: 24px;
+    }
+
+    .click-cta-whatsapp {
+        color: #737ACD;
+        transition: color 250ms ease-in;
+        &:hover { 
+            color: #2CE628;
+        }
+    }
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 25px;
+    padding-bottom: 85px;
+    height: 1270px;
+    width: 100%;
+
+    &__title {
+        font-family: 'Roboto', sans-serif;
+        font-weight: semibold;
+        text-align: center;
+        text-justify: auto;
+        font-size: 36px;
+        margin-inline: auto;
+    }
+
+    &__subtitle {
+        margin-top: 29px;
+        font-family: 'Salsa', sans-serif;
+        font-size: 16px;
+        text-align: center;
+        vertical-align: middle;   
+    }
+
+
+}
+
+
+
+.whatsapp-icon {
+    width: 36px;
+    height: 36px;
+}
