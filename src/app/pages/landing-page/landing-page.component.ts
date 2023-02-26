@@ -19,7 +19,7 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   private readonly newsletterDialogConfig: MatDialogConfig<NewsletterComponent> = {
     disableClose: true,
     autoFocus: true,
-    hasBackdrop: false,
+    hasBackdrop: true,
     position: {
       top: '10%'
     }
@@ -35,8 +35,8 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if(this.timerId != null)
-        clearTimeout(this.timerId)
+    if (this.timerId != null)
+      clearTimeout(this.timerId)
   }
 
 
