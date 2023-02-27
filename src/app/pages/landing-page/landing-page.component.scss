@@ -3,6 +3,7 @@
 :host {
     --primary-color: #484C7F;
     --black: #353535;
+    --gray: #798071;
     min-height: 100%;
     width: 100%;
     display: flex;
@@ -22,7 +23,7 @@
         height: 39.39px;
     }
 
-    
+
     &__search-container {
         display: flex;
         flex-direction: column;
@@ -53,9 +54,9 @@
         font-family: 'Open Sans', sans-serif;
         font-size: 1.2rem;
         caret-color: var(--primary-color);
-        color: rgb(121, 121, 121);
+        color: var(--black);
     }
-    
+
     .search-input__lupe {
         height: 1.5rem;
         margin-right: 10px;
@@ -64,8 +65,8 @@
             cursor: pointer;
         }
     }
-    
-    
+
+
     &__menu {
         display: flex;
         margin-top: 9px;
@@ -83,7 +84,7 @@
     }
 
     &__menu-item:hover {
-        cursor: pointer; 
+        cursor: pointer;
         color: #75A3BD;
     }
 
@@ -101,13 +102,14 @@
     .text-wrapper:not(.click-cta-whatsapp) {
         color: white;
         font-weight: bold;
-        font-size: 24px;
+        font-size: 1.5rem;
     }
 
     .click-cta-whatsapp {
         color: #737ACD;
         transition: color 250ms ease-in;
-        &:hover { 
+
+        &:hover {
             color: #2CE628;
         }
     }
@@ -118,30 +120,253 @@
     flex-direction: column;
     align-items: center;
     padding-top: 25px;
-    padding-bottom: 85px;
-    height: 1270px;
+    height: 100%;
     width: 100%;
 
     &__title {
         font-family: 'Roboto', sans-serif;
-        font-weight: semibold;
+        font-weight: 500;
         text-align: center;
         text-justify: auto;
-        font-size: 36px;
+        font-size: 2.5rem;
         margin-inline: auto;
     }
 
     &__subtitle {
-        margin-top: 29px;
+        margin-top: 20px;
         font-family: 'Salsa', sans-serif;
-        font-size: 16px;
+        font-size: 1rem;
         text-align: center;
-        vertical-align: middle;   
+        vertical-align: middle;
+    }
+
+}
+
+.main>.products-container {
+    margin-top: 20px;
+}
+
+.main>.products-container~.products-container {
+    margin-top: 43px;
+}
+
+.products-container {
+    display: flex;
+    flex-direction: column;
+    width: 771px;
+
+    &__category {
+        font-family: 'Roboto', sans-serif;
+        font-size: 1.5rem;
+        font-weight: bold;
+        text-align: left;
+        color: var(--gray);
+    }
+
+    &__grid {
+        margin-top: 26px;
+    }
+
+    .grid-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 21px;
+    }
+
+    .grid-item {
+        width: 173px;
+    }
+
+    .grid-item span {
+        display: block;
+        text-align: center;
+        font-family: 'Salsa', sans-serif;
+        font-size: 1rem;
+        color: var(--gray);
+
+    }
+
+    .grid-item img {
+        width: 160px;
+    }
+
+}
+
+.about-us {
+    background-color: var(--black);
+    height: 551px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 70px;
+
+    &__title {
+        font-family: 'Roboto', sans-serif;
+        font-size: 2.2rem;
+        color: white;
+        font-weight: bold;
+        margin-top: 40px;
+    }
+
+    &__img {
+        width: 434px;
+        height: 278px;
+    }
+
+    &__wrapper {
+        display: flex;
+        justify-content: space-between;
+        gap: 50px;
+        margin-top: 40px;
+    }
+
+    &__text {
+        display: block;
+        text-align: left;
+        max-width: 431px;
+        margin-block: auto;
+        font-size: 1rem;
+        font-weight: 500;
+        font-family: 'Roboto', sans-serif;
+        color: white
+    }
+}
+
+
+.testimonials {
+    height: 551px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &__title {
+        margin-top: 40px;
+        font-family: 'Roboto', sans-serif;
+        font-size: 2.5rem;
+        font-weight: 600;
+        text-align: center;
+        color: var(--gray);
+    }
+
+    &__wrapper {
+        margin-top: 40px;
+        display: flex;
+        justify-content: center;
+        margin-inline: 241px;
+        gap: 70px;
+    }
+
+    &__wrapper-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 270px;
+    }
+
+    &__wrapper-item img {
+        width: 100%;
+    }
+
+    &__wrapper-item span {
+        font-family: 'Open Sans', sans-serif;
+        font-weight: 400;
+        font-size: 1.2rem;
+        font-style: italic;
+        text-align: center;
+        color: var(--gray);
+        margin-top: 20px;
+        line-break: auto;
+    }
+
+    &__wrapper-item strong {
+        font-family: 'Open Sans', sans-serif;
+        font-weight: 600;
+        font-size: 1.2rem;
+        text-align: center;
+        color: var(--gray);
+        margin-top: 5px;
     }
 
 
 }
 
+.invite {
+    display: flex;
+    height: 366px;
+    width: 100%;
+    background-size: cover;
+    background-position: 0 -40px;
+    background-image: url('/assets/images/invite_background.png');
+
+}
+
+.footer {
+    height: 259px;
+    background-color: var(--black);
+    padding: 30px 155px 0 64px;
+    display: flex;
+
+    &__logo {
+        width: 200px;
+    }
+
+    &__sitemap {
+        margin-left: 70px;
+        display: flex;
+        gap: 25px;
+    }
+
+    &__sitemap-group {
+        vertical-align: middle;
+        font-family: 'Open Sans', sans-serif;
+        color: white;
+        font-size: 1rem;
+    }
+
+    &__sitemap-group a {
+        display: list-item;
+        color: white;
+    }
+
+
+    &__sitemap-title {
+        font-size: 1.5rem;
+        text-align: left;
+        font-weight: bold;
+    }
+
+
+    &__followus {
+        margin-left: auto;
+        width: 160px;
+
+        span {
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .icons-wrapper {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-top: 5px;
+        }
+
+        img {
+            height: 38px;
+        }
+
+        img:hover {
+            cursor: pointer;
+        }
+    }
+
+}
 
 
 .whatsapp-icon {
