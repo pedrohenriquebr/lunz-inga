@@ -129,7 +129,7 @@
         font-weight: 500;
         text-align: center;
         text-justify: auto;
-        font-size: 2.5rem;
+        font-size: 2.5em;
         margin-inline: auto;
     }
 
@@ -200,10 +200,11 @@
     flex-direction: column;
     align-items: center;
     margin-top: 70px;
+    font-size: 1rem;
 
     &__title {
         font-family: 'Roboto', sans-serif;
-        font-size: 2.2rem;
+        font-size: 2.2em;
         color: white;
         font-weight: bold;
         margin-top: 40px;
@@ -216,6 +217,7 @@
 
     &__wrapper {
         display: flex;
+        flex-wrap: wrap;
         justify-content: space-between;
         gap: 50px;
         margin-top: 40px;
@@ -226,7 +228,7 @@
         text-align: left;
         max-width: 431px;
         margin-block: auto;
-        font-size: 1rem;
+        font-size: 1em;
         font-weight: 500;
         font-family: 'Roboto', sans-serif;
         color: white
@@ -235,16 +237,18 @@
 
 
 .testimonials {
-    height: 551px;
+    height: auto;
     background-color: white;
     display: flex;
     flex-direction: column;
     align-items: center;
+    font-size: 1rem;
+    padding-bottom: 22px;
 
     &__title {
         margin-top: 40px;
         font-family: 'Roboto', sans-serif;
-        font-size: 2.5rem;
+        font-size: 2.5em;
         font-weight: 600;
         text-align: center;
         color: var(--gray);
@@ -256,6 +260,7 @@
         justify-content: center;
         margin-inline: 241px;
         gap: 70px;
+        flex-wrap: wrap;
     }
 
     &__wrapper-item {
@@ -272,7 +277,7 @@
     &__wrapper-item span {
         font-family: 'Open Sans', sans-serif;
         font-weight: 400;
-        font-size: 1.2rem;
+        font-size: 1.2em;
         font-style: italic;
         text-align: center;
         color: var(--gray);
@@ -283,7 +288,7 @@
     &__wrapper-item strong {
         font-family: 'Open Sans', sans-serif;
         font-weight: 600;
-        font-size: 1.2rem;
+        font-size: 1.2em;
         text-align: center;
         color: var(--gray);
         margin-top: 5px;
@@ -296,8 +301,7 @@
     height: 366px;
     width: 100%;
     background-size: cover;
-    background-position: 0 -40px;
-    background-image: url('/assets/images/invite_background.png');
+    background-position: 0 -200px;
     border: none;
 
     &__body {
@@ -306,26 +310,29 @@
 }
 
 .footer {
-    height: 259px;
+    height: auto;
     background-color: var(--black);
-    padding: 30px 155px 0 64px;
+    padding: 30px 155px 125px 64px;
     display: flex;
-
+    flex-wrap: wrap;
+    font-size: 1rem;
     &__logo {
         width: 200px;
+        margin-right: 70px;
     }
-
+    
     &__sitemap {
-        margin-left: 70px;
         display: flex;
+        flex-wrap: wrap;
         gap: 25px;
+        margin-right: auto;
     }
-
+    
     &__sitemap-group {
         vertical-align: middle;
         font-family: 'Open Sans', sans-serif;
         color: white;
-        font-size: 1rem;
+        font-size: 1em;
     }
 
     &__sitemap-group a {
@@ -335,14 +342,13 @@
 
 
     &__sitemap-title {
-        font-size: 1.5rem;
+        font-size: 1.5em;
         text-align: left;
         font-weight: bold;
     }
 
 
     &__followus {
-        margin-left: auto;
         width: 160px;
 
         span {
@@ -350,7 +356,7 @@
             width: 100%;
             text-align: center;
             font-family: 'Open Sans', sans-serif;
-            font-size: 1.5rem;
+            font-size: 1.5em;
             color: white;
         }
 
@@ -376,4 +382,45 @@
 .whatsapp-icon {
     width: 36px;
     height: 36px;
+}
+
+
+@media only screen and (max-width: 780px) {
+    .footer,.testimonials, .about-us {
+        font-size: 0.75rem;
+    }
+
+
+    .newsletter {
+        width: 100%;
+        height: var(--newsletter-height-sm);
+        background-position: center;
+        margin-top: 0;
+    }
+
+    .footer {
+        padding-inline: 90px;
+        &__sitemap, &__followus {
+            margin-top: 30px;
+        }
+
+        &__logo {
+            display: inline-block;
+            margin-inline: auto;
+        }
+
+        .img-wrapper {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        &__followus {
+            margin-inline: auto;
+        }
+    }
+
+    .about-us {
+        
+    }
 }
