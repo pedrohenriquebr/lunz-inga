@@ -16,13 +16,17 @@ specifiers:
   '@angular/router': ~13.3.0
   '@types/jasmine': ~3.10.0
   '@types/node': ^12.11.1
+  bootstrap: ^5.2.3
   jasmine-core: ~4.0.0
+  jquery: 3.3.1
   karma: ~6.3.0
   karma-chrome-launcher: ~3.1.0
   karma-coverage: ~2.1.0
   karma-jasmine: ~4.0.0
   karma-jasmine-html-reporter: ~1.7.0
+  ng-bootstrap: ^1.6.3
   ngx-cookie-service: ^15.0.0
+  popper.js: 1.14.3
   rxjs: ~7.5.0
   tslib: ^2.3.0
   typescript: ~4.6.2
@@ -39,7 +43,11 @@ dependencies:
   '@angular/platform-browser': 13.3.5_ottf5syhnwe4guftrmc46c2v5a
   '@angular/platform-browser-dynamic': 13.3.5_33t4wqhwd6t426zaztjm2awxni
   '@angular/router': 13.3.5_c5gzyfnqtcgi7vock5omrpo3gy
+  bootstrap: 5.2.3
+  jquery: 3.3.1
+  ng-bootstrap: 1.6.3_4ssv24hhenfabafhhk7lwdkkly
   ngx-cookie-service: 15.0.0_2ujufvzwxwptccu3xcgiinx3b4
+  popper.js: 1.14.3
   rxjs: 7.5.5
   tslib: 2.4.0
   zone.js: 0.11.5
@@ -2450,6 +2458,12 @@ packages:
     resolution: {integrity: sha1-aN/1++YMUes3cl6p4+0xDcwed24=}
     dev: true
 
+  /bootstrap/5.2.3:
+    resolution: {integrity: sha512-cEKPM+fwb3cT8NzQZYEu4HilJ3anCrWqh3CHAok1p9jXqMPsPTBhU25fBckEJHJ/p+tTxTFTsFQGM+gaHpi3QQ==}
+    peerDependencies:
+      '@popperjs/core': ^2.11.6
+    dev: false
+
   /brace-expansion/1.1.11:
     resolution: {integrity: sha512-iCuPHDFgrHX7H2vEI/5xpz07zSHB00TpugqhmYtVmMO6518mCuRMoOYFldEBl0g187ufozdaHgWKcYFb61qGiA==}
     dependencies:
@@ -4414,6 +4428,10 @@ packages:
       supports-color: 8.1.1
     dev: true
 
+  /jquery/3.3.1:
+    resolution: {integrity: sha512-Ubldcmxp5np52/ENotGxlLe6aGMvmF4R8S6tZjsP6Knsaxd/xp3Zrh50cG93lR6nPXyUFwzN3ZSOQI0wRJNdGg==}
+    dev: false
+
   /js-tokens/4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
     dev: true
@@ -4972,6 +4990,10 @@ packages:
     hasBin: true
     dev: true
 
+  /moment/2.18.1:
+    resolution: {integrity: sha512-QGcnVKRSEhbWy2i0pqFhjWMCczL/YU5ICMB3maUavFcyUqBszRnzsswvOaGOqSfWZ/R+dMnb9gGBuRT4LMTdVQ==}
+    dev: false
+
   /ms/2.0.0:
     resolution: {integrity: sha1-VgiurfwAvmwpAd9fmGF4jeDVl8g=}
     dev: true
@@ -5028,6 +5050,21 @@ packages:
   /neo-async/2.6.2:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
     dev: true
+
+  /ng-bootstrap/1.6.3_4ssv24hhenfabafhhk7lwdkkly:
+    resolution: {integrity: sha512-VrnrgSC0r29Rzppnki6VfyVZpaj3UvkXhTOoPCA5UcTs5eH6pPPTqgNYbXf7Cq9MfNi1Asct2kpMVOGVpLiZnQ==}
+    peerDependencies:
+      '@angular/common': ^2.3.1 || >=4.0.0
+      '@angular/compiler': ^2.3.1 || >=4.0.0
+      '@angular/core': ^2.3.1 || >=4.0.0
+      '@angular/forms': ^2.3.1 || >=4.0.0
+    dependencies:
+      '@angular/common': 13.3.5_2z7dbvhq353ts3uotj6ox4qkcy
+      '@angular/compiler': 13.3.5
+      '@angular/core': 13.3.5_rxjs@7.5.5+zone.js@0.11.5
+      '@angular/forms': 13.3.5_c5gzyfnqtcgi7vock5omrpo3gy
+      moment: 2.18.1
+    dev: false
 
   /ngx-cookie-service/15.0.0_2ujufvzwxwptccu3xcgiinx3b4:
     resolution: {integrity: sha512-KU1JCjfpDTvD6L0FhHN9W/oP3Sue8yMAAK6XY3h/MEhrPS7vx6t3+h0ulY8l8R/9d1cmlQVyTHn1Jd1Jdf5K+g==}
@@ -5476,6 +5513,11 @@ packages:
     dependencies:
       find-up: 4.1.0
     dev: true
+
+  /popper.js/1.14.3:
+    resolution: {integrity: sha512-3lmujhsHXzb83+sI0PzfrE3O1XHZG8m8MXNMTupvA6LrM1/nnsiqYaacYc/RIente9VqnTDPztGEM8uvPAMGyg==}
+    deprecated: You can find the new Popper v2 at @popperjs/core, this package is dedicated to the legacy v1
+    dev: false
 
   /portfinder/1.0.28:
     resolution: {integrity: sha512-Se+2isanIcEqf2XMHjyUKskczxbPH7dQnlMjXX6+dybayyHvAf/TCgyMRlzf/B6QDhAEFOGes0pzRo3by4AbMA==}

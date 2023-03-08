@@ -3,6 +3,7 @@
 
 :host {
     --primary-color: #484C7F;
+    --secondary-color: #FF6B6B;
     --black: #353535;
     --gray: #798071;
     min-height: 100%;
@@ -75,7 +76,7 @@
         color: white;
         font-family: 'Open Sans', sans-serif;
         font-weight: bold;
-        font-size: 1rem;
+        font-size: 1.2rem;
         gap: 13px;
     }
 
@@ -86,7 +87,7 @@
 
     &__menu-item:hover {
         cursor: pointer;
-        color: #75A3BD;
+        color: var(--secondary-color);
     }
 
 }
