@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  NEWSLETTER_DELAY: 1500
+  NEWSLETTER_DELAY: 1500,
+  baseUrl: 'http://localhost:3000'
 };
 
 /*

@@ -15,8 +15,8 @@
 
     <form class="newsletter__form" action="">
       <input required class="newsletter__text-field text-field" type="name" name="name" placeholder="Seu Nome" />
-      <input required class="newsletter__text-field text-field" type="email" name="email" placeholder="Seu Email" />
-      <button type="submit" class="newsletter__form__btn btn-primary"> inscrever </button>
+      <input required class="newsletter__text-field text-field" [class.error]="alreadyExists" [(ngModel)]="userEmail" type="email" name="email" placeholder="Seu Email" />
+      <button type="submit" class="newsletter__form__btn btn-primary" (submit)="handleSubmit()"> inscrever </button>
     </form>
   </div>
 </div>

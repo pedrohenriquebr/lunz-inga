@@ -1,5 +1,5 @@
-@import "./../../../styles";
-@import "src/app/components/newsletter/newsletter.component";
+@import "src/styles";
+@import "src/app/features/newsletter/components/newsletter/newsletter.component";
 
 :host {
     --primary-color: #484C7F;

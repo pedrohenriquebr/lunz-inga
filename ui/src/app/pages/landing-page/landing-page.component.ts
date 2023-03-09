@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { NewsletterComponent } from 'src/app/components/newsletter/newsletter.component';
+import { NewsletterComponent } from 'src/app/features/newsletter/components/newsletter/newsletter.component';
 import { CookieService } from 'ngx-cookie-service';
 import { CookiesNames } from 'src/app/config/cookiesNames.enum';
 import { environment } from 'src/environments/environment';
