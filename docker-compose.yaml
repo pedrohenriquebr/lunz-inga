@@ -9,3 +9,12 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://127.0.0.1:5000
+  db:
+    image: luzinga-mssql
+    build:
+      context: ./.docker/db
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=HakunaM4t4t4@171
+    ports:
+      - "1433:1433"
