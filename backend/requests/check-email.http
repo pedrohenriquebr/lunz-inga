@@ -1,0 +1,1 @@
+GET https://localhost:3000/api/check-email/pedro.braga@gmail.com
