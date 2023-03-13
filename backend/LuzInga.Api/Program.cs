@@ -1,5 +1,7 @@
 using Microsoft.OpenApi.Models;
+using LuzInga.Infra;
 using LuzInga.Application;
+using LuzInga.Domain;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +15,10 @@ builder.Services.AddSwaggerGen(c => {
     c.EnableAnnotations();
 });;
 
-builder.AddApplication();
+builder
+    .AddApplication()
+    .AddDomain()
+    .AddInfra();
 
 var app = builder.Build();
 

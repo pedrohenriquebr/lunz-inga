@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01-LuzInga.Api", "LuzInga.A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02-LuzInga.Application", "LuzInga.Application\LuzInga.Application.csproj", "{A4A8DD46-A69C-4310-804D-37B643FB2C96}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "04-LuzInga.Infra", "LuzInga.Infra\LuzInga.Infra.csproj", "{F27ACFEE-E804-4FF6-A3C7-E486F8020217}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "03-LuzInga.Domain", "LuzInga.Domain\LuzInga.Domain.csproj", "{2081934E-A451-4F02-9D00-68E41219EA17}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +28,13 @@ Global
 		{A4A8DD46-A69C-4310-804D-37B643FB2C96}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A4A8DD46-A69C-4310-804D-37B643FB2C96}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A4A8DD46-A69C-4310-804D-37B643FB2C96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F27ACFEE-E804-4FF6-A3C7-E486F8020217}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F27ACFEE-E804-4FF6-A3C7-E486F8020217}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F27ACFEE-E804-4FF6-A3C7-E486F8020217}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F27ACFEE-E804-4FF6-A3C7-E486F8020217}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2081934E-A451-4F02-9D00-68E41219EA17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2081934E-A451-4F02-9D00-68E41219EA17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2081934E-A451-4F02-9D00-68E41219EA17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2081934E-A451-4F02-9D00-68E41219EA17}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
