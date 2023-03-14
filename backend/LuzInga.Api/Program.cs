@@ -15,6 +15,10 @@ builder.Services.AddSwaggerGen(c => {
     c.EnableAnnotations();
 });;
 
+builder.Configuration
+    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json");
+    
 builder
     .AddApplication()
     .AddDomain()

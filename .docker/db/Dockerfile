@@ -1,4 +1,7 @@
 FROM mcr.microsoft.com/mssql/server:2017-latest
+ENV ACCEPT_EULA y
+ENV SA_PASSWORD HakunaM4t4t4@171
+ENV MSSQL_PID Express
 
 # Create a config directory
 RUN mkdir -p /usr/config
@@ -6,9 +9,3 @@ WORKDIR /usr/config
 
 # Bundle config source
 COPY . /usr/config
-
-# Grant permissions for to our scripts to be executable
-RUN chmod +x /usr/config/entrypoint.sh
-RUN chmod +x /usr/config/configure-db.sh
-
-ENTRYPOINT ["./entrypoint.sh"]

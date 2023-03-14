@@ -9,15 +9,12 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "dotnet",
-            "args": [
-                "watch",
-                "run",
-                "--project",
-                "./LuzInga.Api/LuzInga.Api.csproj",
-                "--launch-profile",
-                "LuzInga.Api"
-            ],
+            "program": "LuzInga.Api/bin/Debug/net6.0/linux-x64/LuzInga.Api.dll",
+            "justMyCode": false,
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "ASPNETCORE_URLS":"http://localhost:3000"
+            },
             "cwd": "${workspaceFolder}/backend",
             "stopAtEntry": false,
             "serverReadyAction": {
@@ -27,7 +24,7 @@
             },
             "console": "integratedTerminal",
             "dotnetWatch": true
-        }
-
+        },
+        
     ]
 }

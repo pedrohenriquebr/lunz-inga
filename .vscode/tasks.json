@@ -9,7 +9,11 @@
                 "build",
                 "${workspaceFolder}/backend/LuzInga.Api/LuzInga.Api.csproj",
                 "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
+                "/consoleloggerparameters:NoSummary",
+                "--arch",
+                "x64",
+                "--os",
+                "linux"
             ],
             "problemMatcher": "$msCompile"
         },

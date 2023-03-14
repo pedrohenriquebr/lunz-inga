@@ -1,4 +1,8 @@
 version: '3.8'
+
+volumes:
+  db_volume:
+
 services:
   api:
     image: luzinga-api
@@ -9,17 +13,16 @@ services:
     ports:
       - 80:80
   db:
-    image: luzinga-mssql
+    image: luzinga-mssqle
     build:
       context: ./.docker/db
-    environment:
-      - ACCEPT_EULA=Y
-      - SA_PASSWORD=HakunaM4t4t4@171
     ports:
       - "1433:1433"
     restart: always
+    volumes:
+      - db_volume
     healthcheck:
-        test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P HakunaM4t4t4@171 -Q 'SELECT 1' || exit 1"]
+        test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $$SA_PASSWORD -Q 'SELECT 1' || exit 1"]
         interval: 10s
         retries: 10
         start_period: 10s
