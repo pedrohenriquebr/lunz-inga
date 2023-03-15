@@ -20,9 +20,9 @@ builder.Configuration
     .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json");
     
 builder
+    .AddInfra()
     .AddApplication()
-    .AddDomain()
-    .AddInfra();
+    .AddDomain();
 
 var app = builder.Build();
 
