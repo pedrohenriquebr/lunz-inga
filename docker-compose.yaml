@@ -13,7 +13,7 @@ services:
     ports:
       - 80:80
   db:
-    image: luzinga-mssqle
+    image: luzinga-mssql
     build:
       context: ./.docker/db
     ports:
