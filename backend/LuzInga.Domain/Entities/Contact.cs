@@ -2,6 +2,8 @@ namespace LuzInga.Domain.Entities;
 
 public class Contact
 {
+    public Contact() { }
+
     public Contact(int contactId, string email, string name)
     {
         ContactId = contactId;
@@ -14,7 +16,7 @@ public class Contact
         Email = email;
         Name = name;
     }
-    
+
     public int ContactId { get; private set; }
     public string Email { get; private set; }
     public string Name { get; private set; }
