@@ -1,4 +1,4 @@
-## LuzIngaDb
+## LuzInga
 
 ## Instructions for Backend
 
