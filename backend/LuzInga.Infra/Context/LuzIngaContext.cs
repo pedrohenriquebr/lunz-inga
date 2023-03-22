@@ -1,10 +1,10 @@
 namespace LuzInga.Infra.Context;
 
+using System.Threading.Tasks;
 using LuzInga.Application;
 using LuzInga.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-
-
+using Microsoft.OpenApi.Extensions;
 
 public class LuzIngaContext : DbContext, IDbContext
 {

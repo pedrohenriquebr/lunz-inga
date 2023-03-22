@@ -40,7 +40,7 @@ public static class DependencyInjection
             }
         }
 
-        services.AddScoped<IDbContext, LuzIngaContext>();
+        services.AddScoped<IDbContext>(sp => sp.GetRequiredService<LuzIngaContext>());
 
         return services;
     }
