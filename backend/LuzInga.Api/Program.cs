@@ -2,27 +2,31 @@ using Microsoft.OpenApi.Models;
 using LuzInga.Infra;
 using LuzInga.Application;
 using LuzInga.Domain;
+using Microsoft.AspNetCore.Mvc;
+using LuzInga.Domain.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c => {
+builder.Services.AddSwaggerGen(c =>
+{
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "LuzIngaServer", Version = "v1" });
     c.EnableAnnotations();
-});;
+});
+;
 
 builder.Configuration
     .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json");
-    
-builder
-    .AddInfra()
-    .AddApplication()
-    .AddDomain();
+    .AddJsonFile(
+        $"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json"
+    );
+
+builder.AddInfra().AddApplication().AddDomain();
 
 var app = builder.Build();
 
