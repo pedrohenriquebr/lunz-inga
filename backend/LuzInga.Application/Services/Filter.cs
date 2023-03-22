@@ -143,7 +143,9 @@ namespace LuzInga.Application.Services
             for (int i = 0; i < this._hashFunctionCount; i++)
             {
                 int hash = this.ComputeHash(primaryHash, secondaryHash, i);
-                this._hashBits[hash] = true;
+                lock(this._hashBits){
+                    this._hashBits[hash] = true;
+                }
             }
         }
 
