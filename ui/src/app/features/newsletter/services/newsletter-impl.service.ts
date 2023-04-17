@@ -3,7 +3,7 @@ import { BaseNewsLetterService } from "./newsletter.service";
 import { HttpClient } from "@angular/common/http";
 import { Observable, map, } from 'rxjs';
 import { environment } from "src/environments/environment";
-import { CheckEmailResponse } from "./models";
+import { CheckEmailResponse } from "../models";
 
 @Injectable()
 export class NewsletterService implements BaseNewsLetterService {

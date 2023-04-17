@@ -23,10 +23,18 @@ public static class DependencyInjection
         IConfiguration config
     )
     {
+        var connectionString = config.GetConnectionString("DefaultConnection");
         // Add DbContext to dependency injection container
         services.AddDbContext<LuzIngaContext>(
-            options => options.UseSqlServer(config.GetConnectionString("DefaultConnection"))
+            options => options.UseSqlServer(connectionString)
         );
+
+        services.AddDbContext<LuzIngaContext>(options =>
+            options
+                .UseSqlServer(connectionString)
+                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking),
+            ServiceLifetime.Transient);
+
 
         // Generate fake Contacts and add to LuzIngaContext
         using (var scope = services.BuildServiceProvider().CreateScope())
@@ -40,7 +48,7 @@ public static class DependencyInjection
             }
         }
 
-        services.AddScoped<IDbContext>(sp => sp.GetRequiredService<LuzIngaContext>());
+        services.AddScoped<ILuzIngaContext>(sp => sp.GetRequiredService<LuzIngaContext>());
 
         return services;
     }

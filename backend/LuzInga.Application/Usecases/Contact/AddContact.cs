@@ -8,16 +8,17 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using LuzInga.Application.Services;
-
+using LuzInga.Application.Common.CQRS;
+using ContactEntity = LuzInga.Domain.Entities.Contact;
 namespace LuzInga.Application.Usecases.Contact.AddContact;
 
 public class AddContactHandler
-    : EndpointBaseAsync.WithRequest<AddContactRequest>.WithActionResult<AddContactResponse>
+    : ActionHandler<AddContactRequest, ActionResult<AddContactResponse>>
 {
-    private readonly IDbContext context;
+    private readonly ILuzIngaContext context;
     private readonly IBloomFilter bloomFilter;
 
-    public AddContactHandler(IDbContext context,  IBloomFilter bloomFilter)
+    public AddContactHandler(ILuzIngaContext context,  IBloomFilter bloomFilter)
     {
         this.context = context;
         this.bloomFilter = bloomFilter;
@@ -42,8 +43,7 @@ public class AddContactHandler
             if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Name))
                 return BadRequest();
 
-            entity = new Domain.Entities.Contact(email: request.Email, name: request.Name);
-
+            entity = ContactEntity.Create(request.Email,request.Name);
             await context.Contact.AddAsync(entity);
             await context.SaveChangesAsync();
             bloomFilter.Add(entity.Email);
@@ -57,7 +57,19 @@ public class AddContactHandler
 
         return StatusCode(
             StatusCodes.Status201Created,
-            new AddContactResponse() { ContactId = entity?.ContactId ?? 0 }
+            new AddContactResponse() { ContactId = entity?.Id ?? 0 }
         );
     }
+}
+
+public sealed class AddContactRequest
+{
+    public string Email { get; set; }
+    public string Name { get; set; }
+}
+
+
+public sealed class AddContactResponse
+{
+    public int ContactId { get; set; }
 }

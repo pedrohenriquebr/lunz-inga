@@ -9,15 +9,29 @@ public static class DependencyInjection
 {
     public static WebApplicationBuilder AddApplication(this WebApplicationBuilder builder)
     {
-        builder.Services.AddBloomFilter();
+        builder
+            .Services
+                .AddBloomFilter()
+                .AddMediator();
 
         return builder;
+    }
+
+
+    public static IServiceCollection AddMediator(this IServiceCollection collection)
+    {
+        var assembly = AppDomain.CurrentDomain.Load("LuzInga.Application");
+        collection.AddMediatR(c => {
+            c.RegisterServicesFromAssembly(assembly);
+        });
+
+        return collection;
     }
 
     public static IServiceCollection AddBloomFilter(this IServiceCollection collection)
     {
         using var scope = collection.BuildServiceProvider().CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<IDbContext>();
+        var context = scope.ServiceProvider.GetRequiredService<ILuzIngaContext>();
         var contactsList = context.Contact.ToList().Select(contact => contact.Email).ToList();
 
         collection.AddSingleton<IBloomFilter>(
@@ -33,4 +47,5 @@ public static class DependencyInjection
 
         return collection;
     }
+
 }
