@@ -3,48 +3,46 @@ namespace LuzInga.Infra.Context;
 
 using System.Threading.Tasks;
 using LuzInga.Application;
-using LuzInga.Domain.Common;
+using LuzInga.Domain;
+using LuzInga.Domain.SharedKernel;
 using LuzInga.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Extensions;
+using System.Reflection;
 
 public class LuzIngaContext : DbContext, ILuzIngaContext
 {
-    private readonly IMediator mediator;
+    private IMediator mediator;
+
     public LuzIngaContext(DbContextOptions<LuzIngaContext> options)
         : base(options) { }
 
-    public DbSet<Contact> Contact { get; set; }
+    public LuzIngaContext WithMediator(IMediator mediator) {
+        this.mediator = mediator;
+        return this;
+    }
+    
+    public DbSet<NewsLetterSubscription> NewsLetterSubscription { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Contact>().HasKey(x => x.Id);
+        modelBuilder.Entity<NewsLetterSubscription>()
+            .HasKey(x => x.Id);
+        
+        modelBuilder.Entity<NewsLetterSubscription>()
+            .Property(x => x.Id)
+            .HasColumnName("NewsLetterSubscriptionId");
+            
+        modelBuilder.Entity<NewsLetterSubscription>().Property(x => x.Name).IsRequired();
 
-        modelBuilder.Entity<Contact>().Property(x => x.Name).IsRequired();
-
-        modelBuilder.Entity<Contact>().Property(x => x.Email).IsRequired();
+        modelBuilder.Entity<NewsLetterSubscription>().Property(x => x.Email).IsRequired();
     }
 
-    public sealed override Task<int> SaveChangesAsync(CancellationToken token){
-        
-        var entities  = this.ChangeTracker
-                                    .Entries()
-                                    .Where(s => s is IAggregateRoot)
-                                    .ToList();
-
-        foreach (var entity in entities)
-        {
-           var events = (IReadOnlyCollection<BaseEvent>)entity.Property("DomainEvents");
-
-           foreach (var @event in events)
-           {
-                mediator.Publish(@event);
-           }
-           
-        }
-
-        return base.SaveChangesAsync(token);
+    public async Task<bool> SaveChangesAsync(CancellationToken token = default){
+        await this.mediator.DispatchDomainEventsAsync(this);
+        var result = await base.SaveChangesAsync(token);
+        return true;
     }
 }
 

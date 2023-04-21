@@ -1,5 +1,6 @@
 using Ardalis.ApiEndpoints;
 using LuzInga.Application.Services;
+using LuzInga.Domain;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,12 +19,12 @@ public class CheckEmailWithBoomFilterHandler
         this.mediator = mediator;
     }
 
-    [HttpGet("/api/contact/check-email/v2/{email}")]
+    [HttpGet(Strings.API_ROUTE_NEWSLETTER_CHECK_EMAIL+"/v2/{email}")]
     [SwaggerOperation(
-        Summary = "Check if emails exists in bloom filter first, then checks on the contacts table on database",
+        Summary = "Check if emails exists in bloom filter first, then checks on the newslettersubscription table on database",
         Description = "Return if exists email",
-        OperationId = "Contact.Checkemail",
-        Tags = new[] { "Contact" }
+        OperationId = "NewsLetterSubscription.Checkemail",
+        Tags = new[] { "NewsLetterSubscription" }
     )]
     public override async Task<ActionResult<CheckEmailQueryResponse>> HandleAsync(
         CancellationToken cancellationToken = default
@@ -54,7 +55,7 @@ public class CheckEmailWithBloomFilterQueryHandler : IRequestHandler<CheckEmailW
         if (bloomFilter.MaybeContains(request.Email!))
             return 
                 new CheckEmailQueryResponse(
-                    await context.Contact.AnyAsync(
+                    await context.NewsLetterSubscription.AnyAsync(
                         x => x.Email == request.Email,
                         cancellationToken
                     )

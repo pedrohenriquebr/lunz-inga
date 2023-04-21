@@ -1,4 +1,5 @@
 using LuzInga.Application.Services;
+using LuzInga.Domain;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
@@ -11,28 +12,19 @@ public static class DependencyInjection
     {
         builder
             .Services
-                .AddBloomFilter()
-                .AddMediator();
+                .AddBloomFilter();
 
         return builder;
     }
 
 
-    public static IServiceCollection AddMediator(this IServiceCollection collection)
-    {
-        var assembly = AppDomain.CurrentDomain.Load("LuzInga.Application");
-        collection.AddMediatR(c => {
-            c.RegisterServicesFromAssembly(assembly);
-        });
-
-        return collection;
-    }
+    
 
     public static IServiceCollection AddBloomFilter(this IServiceCollection collection)
     {
         using var scope = collection.BuildServiceProvider().CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<ILuzIngaContext>();
-        var contactsList = context.Contact.ToList().Select(contact => contact.Email).ToList();
+        var contactsList = context.NewsLetterSubscription.ToList().Select(contact => contact.Email).ToList();
 
         collection.AddSingleton<IBloomFilter>(
             provider =>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Ardalis.ApiEndpoints;
+using LuzInga.Domain;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,12 +23,12 @@ public class CheckEmailHandler
         this.mediator = mediator;
     }
 
-    [HttpGet("/api/contact/check-email/{email}")]
+    [HttpGet(Strings.API_ROUTE_NEWSLETTER_CHECK_EMAIL+"/{email}")]
     [SwaggerOperation(
-        Summary = "Check if emails exists in the contacts table on database",
+        Summary = "Check if emails exists in the newslettersubscription table on database",
         Description = "Return if exists email",
-        OperationId = "Contact.Checkemail",
-        Tags = new[] { "Contact" }
+        OperationId = "NewsLetterSubscription.Checkemail",
+        Tags = new[] { "NewsLetterSubscription" }
     )]
     public override async Task<ActionResult<CheckEmailQueryResponse>> HandleAsync(
         CancellationToken cancellationToken = default
@@ -52,7 +53,7 @@ public class CheckEmailQueryHandler : IRequestHandler<CheckEmailQuery, CheckEmai
 
     public async Task<CheckEmailQueryResponse> Handle(CheckEmailQuery request, CancellationToken cancellationToken)
     {
-        var existsEmail = await context.Contact.AnyAsync(
+        var existsEmail = await context.NewsLetterSubscription.AnyAsync(
             x => x.Email == request.Email,
             cancellationToken
         );

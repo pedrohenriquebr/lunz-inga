@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace LuzInga.Domain.Common;
+namespace LuzInga.Domain.SharedKernel;
 
 public abstract class Enumeration : IComparable
 {

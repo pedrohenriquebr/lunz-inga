@@ -1,7 +1,10 @@
 using Bogus;
 using LuzInga.Application;
+using LuzInga.Domain;
 using LuzInga.Domain.Entities;
+using LuzInga.Domain.SharedKernel;
 using LuzInga.Infra.Context;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -18,12 +21,24 @@ public static class DependencyInjection
         return builder;
     }
 
+    public static IServiceCollection AddMediator(this IServiceCollection collection)
+    {
+        var assembly = AppDomain.CurrentDomain.Load("LuzInga.Application");
+        collection.AddMediatR(c => {
+            c.RegisterServicesFromAssembly(assembly);
+        });
+
+        return collection;
+    }
+
     public static IServiceCollection ConfigureServices(
         this IServiceCollection services,
         IConfiguration config
     )
     {
         var connectionString = config.GetConnectionString("DefaultConnection");
+
+        services.AddMediator();
         // Add DbContext to dependency injection container
         services.AddDbContext<LuzIngaContext>(
             options => options.UseSqlServer(connectionString)
@@ -40,7 +55,7 @@ public static class DependencyInjection
         using (var scope = services.BuildServiceProvider().CreateScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<LuzIngaContext>();
-            if (!context.Contact.Any())
+            if (!context.NewsLetterSubscription.Any())
             {
                 var fakeContacts = GenerateFakeContacts(1_000);
                 context.AddRange(fakeContacts);
@@ -48,17 +63,22 @@ public static class DependencyInjection
             }
         }
 
-        services.AddScoped<ILuzIngaContext>(sp => sp.GetRequiredService<LuzIngaContext>());
+        services.AddScoped<ILuzIngaContext>(sp => 
+                sp.GetRequiredService<LuzIngaContext>()
+                .WithMediator(sp.GetRequiredService<IMediator>())
+        );
 
         return services;
     }
 
-    private static IEnumerable<Contact> GenerateFakeContacts(int count)
+    private static IEnumerable<NewsLetterSubscription> GenerateFakeContacts(int count)
     {
-        var faker = new Faker<Contact>()
+        var faker = new Faker<NewsLetterSubscription>()
             .UseSeed(1314159)
-            .RuleFor(c => c.Email, f => f.Person.Email)
-            .RuleFor(c => c.Name, f => f.Person.FullName);
+            .CustomInstantiator(f => new NewsLetterSubscription(
+                email:f.Person.Email,
+                name: f.Person.FullName
+            ));
 
         return faker.Generate(count);
     }

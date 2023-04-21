@@ -1,15 +1,18 @@
 USE [LuzIngaDb];
 GO
 
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Contact]') AND type in (N'U'))
+IF NOT EXISTS (SELECT *
+    FROM INFORMATION_SCHEMA.TABLES
+    WHERE TABLE_SCHEMA = 'dbo'
+    AND TABLE_NAME = 'NewsLetterSubscription')
 BEGIN
-    CREATE TABLE [dbo].[Contact](
-        [ContactId] [int] IDENTITY(1,1) NOT NULL,
+    CREATE TABLE [dbo].[NewsLetterSubscription](
+        [NewsLetterSubscriptionId] [uniqueidentifier] NOT NULL DEFAULT newid(),
         [Email] [nvarchar](100) NOT NULL,
         [Name] [nvarchar](100) NOT NULL,
-        CONSTRAINT [PK_Contact] PRIMARY KEY CLUSTERED 
+        CONSTRAINT [PK_NewsLetterSubscription] PRIMARY KEY CLUSTERED 
     (
-        [ContactId] ASC
+        [NewsLetterSubscriptionId] ASC
     )
     )
 END

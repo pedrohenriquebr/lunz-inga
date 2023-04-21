@@ -4,15 +4,17 @@ using AspNetCore.IQueryable.Extensions.Sort;
 using Microsoft.EntityFrameworkCore;
 
 namespace LuzInga.Application.Common;
-public sealed class PaginationFactory
+public sealed class Paginator
 {
-    public static Task<PaginatedResponse<TEntity>> Create<TEntity>(DbSet<TEntity> entity, BasePaginated request)
+    private const int MIN_PAGE = 0;
+
+    public static Task<PaginatedResponse<TEntity>> Paginate<TEntity>(DbSet<TEntity> entity, BasePaginated request)
         where TEntity : class
     {
-        return Create<TEntity>(entity.AsQueryable(), request);
+        return Paginate<TEntity>(entity.AsQueryable(), request);
     }
 
-    public static async Task<PaginatedResponse<TEntity>> Create<TEntity>(IQueryable<TEntity> entity, BasePaginated request)
+    public static async Task<PaginatedResponse<TEntity>> Paginate<TEntity>(IQueryable<TEntity> entity, BasePaginated request)
         where TEntity : class
     {
         var queryable = entity
@@ -29,7 +31,7 @@ public sealed class PaginationFactory
             PageSize = result.Count(),
             Total = totalItems,
             NexPage = (int)(request.Offset < (totalItems / request.Limit) ? request.Offset + 1 : request.Offset),
-            PreviousPage = (int)(request.Offset > 0 ? request.Offset - 1 : 0),
+            PreviousPage = (int)(request.Offset > MIN_PAGE ? request.Offset - 1 : MIN_PAGE),
             LastPage = request.Offset >= (totalItems / request.Limit),
         };
     }

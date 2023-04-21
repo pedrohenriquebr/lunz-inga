@@ -27,7 +27,10 @@ builder.Configuration
     );
 
 
-builder.AddInfra().AddApplication().AddDomain();
+builder
+    .AddInfra()
+    .AddDomain()
+    .AddApplication();
 
 var app = builder.Build();
 

@@ -5,40 +5,41 @@ using AspNetCore.IQueryable.Extensions.Pagination;
 using AspNetCore.IQueryable.Extensions.Sort;
 using LuzInga.Application.Common;
 using LuzInga.Application.Common.CQRS;
+using LuzInga.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Annotations;
-using ContactEntity = LuzInga.Domain.Entities.Contact;
+using SubscriptionEntity = LuzInga.Domain.Entities.NewsLetterSubscription;
 
 namespace LuzInga.Application.Usecases.Contact.ListContacts;
 
-public sealed class ListContactsHandler : QueryHandler<ListContactsRequest, PaginatedResponse<ContactEntity>>
+public sealed class ListSubscriptionsHandler : QueryHandler<ListSubscriptionsRequest, PaginatedResponse<SubscriptionEntity>>
 {
     private readonly ILuzIngaContext context;
 
-    public ListContactsHandler(ILuzIngaContext context)
+    public ListSubscriptionsHandler(ILuzIngaContext context)
     {
         this.context = context;
     }
 
-    [HttpGet("/api/contact")]
+    [HttpGet(Strings.API_BASEURL_NEWSLETTER_SUBSCRIPTION)]
     [SwaggerOperation(
-        Summary = "Paginate and filter all contacts",
-        Description = "Return a page of contacts",
-        OperationId = "Contact.ListContacts",
-        Tags = new[] { "Contact" }
+        Summary = "Paginate and filter all newslettersubscription",
+        Description = "Return a page of newslettersubscription",
+        OperationId = "NewsLetterSubscription.ListSubscriptions",
+        Tags = new[] { "NewsLetterSubscription" }
     )]
-    public override async Task<PaginatedResponse<ContactEntity>> HandleAsync(
+    public override async Task<PaginatedResponse<SubscriptionEntity>> HandleAsync(
         [FromQuery]
-        ListContactsRequest request,
+        ListSubscriptionsRequest request,
         CancellationToken cancellationToken = default)
     {
-        return await PaginationFactory.Create(context.Contact, request);
+        return await Paginator.Paginate(context.NewsLetterSubscription, request);
     }
 }
 
 
-public sealed class ListContactsRequest : BasePaginated
+public sealed class ListSubscriptionsRequest : BasePaginated
 {
     public int? ContactId { get; set; }
 
