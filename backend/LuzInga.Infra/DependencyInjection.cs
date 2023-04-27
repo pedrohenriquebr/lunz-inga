@@ -2,8 +2,11 @@ using Bogus;
 using LuzInga.Application;
 using LuzInga.Domain;
 using LuzInga.Domain.Entities;
+using LuzInga.Domain.Factories;
+using LuzInga.Domain.Services;
 using LuzInga.Domain.SharedKernel;
 using LuzInga.Infra.Context;
+using LuzInga.Infra.Services;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
@@ -31,6 +34,12 @@ public static class DependencyInjection
         return collection;
     }
 
+    public static IServiceCollection AddServices(this IServiceCollection collection)
+        => collection
+                .AddScoped<ISubscriptionIdGenerator,SubscriptionIdGenerator>()
+                .AddScoped<INewsLetterSubscriptionFactory, NewsLetterSubscriptionFactory>()
+                .AddScoped<ISubscriptionTokenProvider, SubscriptionTokenProvider>();
+
     public static IServiceCollection ConfigureServices(
         this IServiceCollection services,
         IConfiguration config
@@ -38,6 +47,13 @@ public static class DependencyInjection
     {
         var connectionString = config.GetConnectionString("DefaultConnection");
 
+        services.AddStackExchangeRedisCache(options => {
+            options.Configuration = config.GetConnectionString("Redis");
+            options.InstanceName = "LuzInga_"; 
+        });
+
+
+        services.AddServices();
         services.AddMediator();
         // Add DbContext to dependency injection container
         services.AddDbContext<LuzIngaContext>(
@@ -55,9 +71,10 @@ public static class DependencyInjection
         using (var scope = services.BuildServiceProvider().CreateScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<LuzIngaContext>();
+            var factory  = scope.ServiceProvider.GetRequiredService<INewsLetterSubscriptionFactory>();
             if (!context.NewsLetterSubscription.Any())
             {
-                var fakeContacts = GenerateFakeContacts(1_000);
+                var fakeContacts = GenerateFakeContacts(1_000,factory);
                 context.AddRange(fakeContacts);
                 context.SaveChanges();
             }
@@ -71,11 +88,11 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IEnumerable<NewsLetterSubscription> GenerateFakeContacts(int count)
+    private static IEnumerable<NewsLetterSubscription> GenerateFakeContacts(int count, INewsLetterSubscriptionFactory factory)
     {
         var faker = new Faker<NewsLetterSubscription>()
             .UseSeed(1314159)
-            .CustomInstantiator(f => new NewsLetterSubscription(
+            .CustomInstantiator(f => factory.CreateSubscription(
                 email:f.Person.Email,
                 name: f.Person.FullName
             ));

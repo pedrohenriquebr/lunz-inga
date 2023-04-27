@@ -10,6 +10,9 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Extensions;
 using System.Reflection;
+using LuzInga.Domain.ValueObjects;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using LuzInga.Infra.Context.ValueConverters;
 
 public class LuzIngaContext : DbContext, ILuzIngaContext
 {
@@ -39,9 +42,17 @@ public class LuzIngaContext : DbContext, ILuzIngaContext
         modelBuilder.Entity<NewsLetterSubscription>().Property(x => x.Email).IsRequired();
     }
 
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        configurationBuilder.Properties<SubscriptionId>()
+            .HaveConversion<SubscriptionIdValueConverter>();
+
+        base.ConfigureConventions(configurationBuilder);
+    }
+
     public async Task<bool> SaveChangesAsync(CancellationToken token = default){
-        await this.mediator.DispatchDomainEventsAsync(this);
         var result = await base.SaveChangesAsync(token);
+        await this.mediator.DispatchDomainEventsAsync(this);
         return true;
     }
 }

@@ -5,8 +5,9 @@ using LuzInga.Application.Services;
 using LuzInga.Application.Common.CQRS;
 using MediatR;
 using LuzInga.Domain;
-using NewsletterSubscriptionEntity = LuzInga.Domain.Entities.NewsLetterSubscription;  
-namespace LuzInga.Application.Usecases.Contact.AddContact;
+using LuzInga.Domain.Factories;
+
+namespace LuzInga.Application.Usecases.NewsletterSubscription.SubscribeNewsLetter;
 
 public class SubscribeNewsLetterActionHandler
     : ActionHandler<SubscribeNewsLetterRequest, ActionResult<SubscribeNewsletterResponse>>
@@ -65,21 +66,23 @@ public sealed class SubscribeNewsLetterRequest : IRequest<SubscribeNewsletterRes
 
 public sealed class SubscribeNewsletterResponse
 {
-    public int NewsletterSubscriptionId { get; set; }
+    public Guid NewsletterSubscriptionId { get; set; }
 }
 
 
 public class SubscribeNewsletterHandler : IRequestHandler<SubscribeNewsLetterRequest, SubscribeNewsletterResponse>
 {
     private readonly ILuzIngaContext context;
-    public SubscribeNewsletterHandler(ILuzIngaContext contactService)
+    private readonly INewsLetterSubscriptionFactory factory;
+    public SubscribeNewsletterHandler(ILuzIngaContext contactService, INewsLetterSubscriptionFactory factory)
     {
         this.context = contactService;
+        this.factory = factory;
     }
 
     public async Task<SubscribeNewsletterResponse> Handle(SubscribeNewsLetterRequest request, CancellationToken cancellationToken)
     {
-        var newSubscription = NewsletterSubscriptionEntity.Create(request.Email, request.Name);
+        var newSubscription = factory.CreateSubscription(request.Name, request.Email);
         await context.NewsLetterSubscription.AddAsync(newSubscription);
         await context.SaveChangesAsync();
         

@@ -1,3 +1,4 @@
+using LuzInga.Domain.Services;
 using MediatR;
 
 namespace LuzInga.Domain.SharedKernel;
@@ -8,6 +9,6 @@ public abstract class BaseEvent : INotification
     
     public BaseEvent()
     {
-        DateTimeCreated = DateTime.Now;
+        DateTimeCreated = DateTimeProvider.Now;
     }
 }

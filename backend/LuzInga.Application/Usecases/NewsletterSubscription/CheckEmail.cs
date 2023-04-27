@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace LuzInga.Application.Usecases.Contact.CheckEmail;
+namespace LuzInga.Application.Usecases.NewsletterSubscription.CheckEmail;
 
 
 
