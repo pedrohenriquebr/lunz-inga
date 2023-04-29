@@ -12,11 +12,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Swashbuckle.AspNetCore.Annotations;
-using SubscriptionEntity = LuzInga.Domain.Entities.NewsLetterSubscription;
 
+
+using SubscriptionEntity = LuzInga.Domain.Entities.NewsLetterSubscription;
 namespace LuzInga.Application.Usecases.NewsletterSubscription.ListContacts;
 
-public sealed class ListSubscriptionsHandler : QueryHandler<ListSubscriptionsRequest, PaginatedResponse<SubscriptionEntity>>
+public sealed class ListSubscriptionsHandler : QueryHandler<ListSubscriptionsRequest, PaginatedResponse<SubscriptionResponse>>
 {
     private readonly ILuzIngaContext context;
     private readonly IDistributedCache cache;
@@ -28,50 +29,30 @@ public sealed class ListSubscriptionsHandler : QueryHandler<ListSubscriptionsReq
     }
 
     [HttpGet(Strings.API_BASEURL_NEWSLETTER_SUBSCRIPTION)]
+    [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
     [SwaggerOperation(
         Summary = "Paginate and filter all newslettersubscription",
         Description = "Return a page of newslettersubscription",
         OperationId = "NewsLetterSubscription.ListSubscriptions",
         Tags = new[] { "NewsLetterSubscription" }
     )]
-    public override async Task<PaginatedResponse<SubscriptionEntity>> HandleAsync(
+    public override async Task<PaginatedResponse<SubscriptionResponse>> HandleAsync(
         [FromQuery]
         ListSubscriptionsRequest request,
         CancellationToken cancellationToken = default)
     {
-        var key = CreateKey(request); 
-        var cacheResult = await this.cache.GetRecordAsync<PaginatedResponse<SubscriptionEntity>>(key);
         
-        if(cacheResult is not null)
-            return cacheResult;
+        var rs = await Paginator.Paginate(context.NewsLetterSubscription, request);
 
-        var result = await Paginator.Paginate(context.NewsLetterSubscription, request);
-
-        await this.cache.SetRecordAsync(key, result);
-
-        return result;
-    }
-
-    [NonAction]
-    public string CreateKey(ListSubscriptionsRequest request)
-    {
-        var sb = new StringBuilder();
-        sb.Append("ListSubscriptions_");
-        
-        if (!string.IsNullOrEmpty(request.Email))
+        return new PaginatedResponse<SubscriptionResponse>()
         {
-            sb.Append($"Email_{request.Email}_");
-        }
-        
-        if (!string.IsNullOrEmpty(request.Name))
-        {
-            sb.Append($"Name_{request.Name}_");
-        }
-        
-        sb.Append($"Page_{request.Offset}_");
-        sb.Append($"PageSize_{request.Limit}");
-        
-        return sb.ToString();
+            NexPage = rs.NexPage,
+            LastPage = rs.LastPage,
+            PreviousPage = rs.PreviousPage,
+            PageSize = rs.PageSize,
+            Total = rs.Total,
+            Items = rs.Items.Select(d => (SubscriptionResponse)d).ToList()
+        };
     }
 
 }
@@ -86,3 +67,36 @@ public sealed class ListSubscriptionsRequest : BasePaginated
     [QueryOperator(Operator = WhereOperator.StartsWith, CaseSensitive = false)]
     public string? Name { get; set; }
 }
+
+
+public sealed record SubscriptionResponse(
+    string Email,
+    string Name,
+    DateTime DateTimeCreated,
+    DateTime DateTimeUpdated,
+    bool IsConfirmed,
+    string? ConfirmationCode,
+    DateTime? ConfirmationCodeExpiration,
+    string? UnsubscriptionReason,
+    DateTime? DateTimeConfirmed,
+    DateTime? DateTimeUnsubscribed,
+    DateTime? DateTimeReactivated
+)
+{
+    public static implicit operator SubscriptionResponse(SubscriptionEntity entity)
+    {
+        return new SubscriptionResponse(
+            entity.Email,
+            entity.Name,
+            entity.DateTimeCreated,
+            entity.DateTimeUpdated,
+            entity.IsConfirmed,
+            entity.ConfirmationCode,
+            entity.ConfirmationCodeExpiration,
+            entity.UnsubscriptionReason,
+            entity.DateTimeConfirmed,
+            entity.DateTimeUnsubscribed,
+            entity.DateTimeReactivated
+        );
+    }
+};

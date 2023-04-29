@@ -4,6 +4,7 @@ using LuzInga.Application;
 using LuzInga.Domain;
 using Microsoft.AspNetCore.Mvc;
 using LuzInga.Domain.Entities;
+using LuzInga.Api;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,7 +43,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
+app.UseResponseCachingEx();
+app.UseLogging();
 app.MapControllers();
 app.Run();

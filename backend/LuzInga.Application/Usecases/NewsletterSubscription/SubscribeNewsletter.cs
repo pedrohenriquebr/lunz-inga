@@ -10,7 +10,7 @@ using LuzInga.Domain.Factories;
 namespace LuzInga.Application.Usecases.NewsletterSubscription.SubscribeNewsLetter;
 
 public class SubscribeNewsLetterActionHandler
-    : ActionHandler<SubscribeNewsLetterRequest, ActionResult<SubscribeNewsletterResponse>>
+    : CommandHandler<SubscribeNewsLetterRequest>
 {
     private readonly IBloomFilter bloomFilter;
     private readonly IMediator mediator;
@@ -22,25 +22,23 @@ public class SubscribeNewsLetterActionHandler
     }
 
     [HttpPost(Strings.API_BASEURL_NEWSLETTER_SUBSCRIPTION)]
-    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [SwaggerOperation(
         Summary = "Subscribe to newsletter",
         OperationId = "NewsLetterSubscription.Subscribe",
         Tags = new[] { "NewsLetterSubscription" }
     )]
-    public override async Task<ActionResult<SubscribeNewsletterResponse>> HandleAsync(
+    public override async Task<ActionResult> HandleAsync(
         [FromBody] SubscribeNewsLetterRequest request,
         CancellationToken cancellationToken = default
     )
     {
-
-        SubscribeNewsletterResponse? response = null;
         try
         {
             if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Name))
                 return BadRequest();
             
-            response = await mediator.Send(request);
+            await mediator.Send(request);
             bloomFilter.Add(request.Email);
         }
         catch (Exception ex) { 
@@ -50,27 +48,18 @@ public class SubscribeNewsLetterActionHandler
             });
         }
 
-        return StatusCode(
-            StatusCodes.Status201Created,
-            response
-        );
+        return NoContent();
     }
 }
 
-public sealed class SubscribeNewsLetterRequest : IRequest<SubscribeNewsletterResponse>
+public sealed class SubscribeNewsLetterRequest : IRequest
 {
     public string Email { get; set; }
     public string Name { get; set; }
 }
 
 
-public sealed class SubscribeNewsletterResponse
-{
-    public Guid NewsletterSubscriptionId { get; set; }
-}
-
-
-public class SubscribeNewsletterHandler : IRequestHandler<SubscribeNewsLetterRequest, SubscribeNewsletterResponse>
+public class SubscribeNewsletterHandler : IRequestHandler<SubscribeNewsLetterRequest>
 {
     private readonly ILuzIngaContext context;
     private readonly INewsLetterSubscriptionFactory factory;
@@ -80,14 +69,12 @@ public class SubscribeNewsletterHandler : IRequestHandler<SubscribeNewsLetterReq
         this.factory = factory;
     }
 
-    public async Task<SubscribeNewsletterResponse> Handle(SubscribeNewsLetterRequest request, CancellationToken cancellationToken)
+    public async Task Handle(SubscribeNewsLetterRequest request, CancellationToken cancellationToken)
     {
         var newSubscription = factory.CreateSubscription(request.Name, request.Email);
         await context.NewsLetterSubscription.AddAsync(newSubscription);
         await context.SaveChangesAsync();
-        
-        return new SubscribeNewsletterResponse(){
-            NewsletterSubscriptionId = newSubscription.Id
-        };
+
+        await Unit.Task;
     }
 }

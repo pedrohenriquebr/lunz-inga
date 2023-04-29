@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Ardalis.ApiEndpoints;
+using LuzInga.Application.Services;
 using LuzInga.Domain;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -24,6 +25,7 @@ public class CheckEmailHandler
     }
 
     [HttpGet(Strings.API_ROUTE_NEWSLETTER_CHECK_EMAIL+"/{email}")]
+    [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
     [SwaggerOperation(
         Summary = "Check if emails exists in the newslettersubscription table on database",
         Description = "Return if exists email",
@@ -45,20 +47,26 @@ public class CheckEmailQueryHandler : IRequestHandler<CheckEmailQuery, CheckEmai
 {
 
     private readonly ILuzIngaContext context;
+    private readonly IBloomFilter bloomFilter;
 
-    public CheckEmailQueryHandler(ILuzIngaContext context)
+    public CheckEmailQueryHandler(ILuzIngaContext context, IBloomFilter bloomFilter)
     {
         this.context = context;
+        this.bloomFilter = bloomFilter;
     }
 
     public async Task<CheckEmailQueryResponse> Handle(CheckEmailQuery request, CancellationToken cancellationToken)
     {
-        var existsEmail = await context.NewsLetterSubscription.AnyAsync(
-            x => x.Email == request.Email,
-            cancellationToken
-        );
+        if (bloomFilter.MaybeContains(request.Email!))
+            return 
+                new CheckEmailQueryResponse(
+                    await context.NewsLetterSubscription.AnyAsync(
+                        x => x.Email == request.Email,
+                        cancellationToken
+                    )
+                );
 
-        return new CheckEmailQueryResponse(existsEmail);
+        return new(false);
     }
 }
 
