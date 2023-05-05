@@ -13,13 +13,12 @@ namespace LuzInga.Api.Middlewares
 
     public class CachingMiddleware
     {
-        private const string CACHING_PREFIX = "Caching";
         private readonly RequestDelegate next;
         private readonly IDistributedCache cache;
         private readonly IOptions<RedisConfig> config;
-        private readonly IKeyFactory keyFactory;
+        private readonly IRedisKeyFactory keyFactory;
 
-        public CachingMiddleware(RequestDelegate next, IDistributedCache cache, IOptions<RedisConfig> config, IKeyFactory keyFactory)
+        public CachingMiddleware(RequestDelegate next, IDistributedCache cache, IOptions<RedisConfig> config, IRedisKeyFactory keyFactory)
         {
             this.next = next;
             this.cache = cache;
@@ -38,7 +37,7 @@ namespace LuzInga.Api.Middlewares
                 return;
             }
 
-            var key = CreateKey(path, context.Request.Query);
+            var key = this.keyFactory.CreateCachingKey(path, context.Request.Query);
 
             // Try to get the cached result from the cache
             var cachedResult = await this.cache.GetStringAsync(key);
@@ -80,24 +79,6 @@ namespace LuzInga.Api.Middlewares
                     context.Response.Body = originalBodyStream;
                 }
             }
-        }
-
-        private string CreateKey(PathString path, IQueryCollection query)
-        {
-            var sb = new StringBuilder();
-            sb.Append(CACHING_PREFIX);
-            sb.Append(config.Value.KeyDelimiter);
-            sb.Append(path);
-
-            foreach (var item in query)
-            {
-                sb.Append(config.Value.KeyDelimiter);
-                sb.Append(item.Key);
-                sb.Append(config.Value.KeyDelimiter);
-                sb.Append(item.Value);
-            }
-
-            return sb.ToString();
         }
 
 

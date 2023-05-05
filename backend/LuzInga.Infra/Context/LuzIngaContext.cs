@@ -21,22 +21,29 @@ public sealed class LuzIngaContext : DbContext, ILuzIngaContext, IUnitOfWork
     public LuzIngaContext(DbContextOptions<LuzIngaContext> options)
         : base(options) { }
 
-    public LuzIngaContext WithMediator(IMediator mediator) {
+    public LuzIngaContext WithMediator(IMediator mediator)
+    {
         this.mediator = mediator;
         return this;
     }
-    
+
+    public LuzIngaContext DisableMediator()
+    {
+        this.mediator = null;
+        return this;
+    }
+
     public DbSet<NewsLetterSubscription> NewsLetterSubscription { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<NewsLetterSubscription>()
             .HasKey(x => x.Id);
-        
+
         modelBuilder.Entity<NewsLetterSubscription>()
             .Property(x => x.Id)
             .HasColumnName("NewsLetterSubscriptionId");
-            
+
         modelBuilder.Entity<NewsLetterSubscription>().Property(x => x.Name).IsRequired();
 
         modelBuilder.Entity<NewsLetterSubscription>().Property(x => x.Email).IsRequired();
@@ -49,7 +56,8 @@ public sealed class LuzIngaContext : DbContext, ILuzIngaContext, IUnitOfWork
         base.ConfigureConventions(configurationBuilder);
     }
 
-    public async Task<bool> SaveChangesAsync(CancellationToken token = default){
+    public async Task<bool> SaveChangesAsync(CancellationToken token = default)
+    {
         var result = await base.SaveChangesAsync(token);
         await mediator?.DispatchDomainEventsAsync(this);
         return true;

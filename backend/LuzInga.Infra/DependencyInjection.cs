@@ -27,10 +27,9 @@ public static class DependencyInjection
     {
         builder.Services
                         .AddConfiguration(builder.Configuration)
-                        .AddRedis(builder.Configuration)
                         .AddServices()
-                        .AddDbContext(builder.Configuration)
-                        ;
+                        .AddRedis(builder.Configuration)
+                        .AddDbContext(builder.Configuration);
         return builder;
     }
 
@@ -42,10 +41,11 @@ public static class DependencyInjection
                                 .Bind(opt));
     }
 
-    
+
 
     public static IServiceCollection AddServices(this IServiceCollection collection)
         => collection
+                .AddSingleton<IRedisKeyFactory, RedisKeyFactory>()
                 .AddScoped<ISubscriptionIdGenerator, SubscriptionIdGenerator>()
                 .AddScoped<INewsLetterSubscriptionFactory, NewsLetterSubscriptionFactory>()
                 .AddScoped<ISubscriptionConfirmationCodeFactory, DefaultSubscriptionConfirmationCodeFactory>();
@@ -56,11 +56,16 @@ public static class DependencyInjection
         IConfiguration config
     )
     {
-        string redisConnectionString = config.GetConnectionString("Redis");
-        var redisConfig = services
-                                .BuildServiceProvider()
-                                .GetRequiredService<IOptions<RedisConfig>>();
 
+
+        string redisConnectionString = config.GetConnectionString("Redis");
+        var serviceProvider = services.BuildServiceProvider();
+
+        var redisConfig = serviceProvider
+                                .GetRequiredService<IOptions<RedisConfig>>();
+        
+        var keyFactory = serviceProvider.GetRequiredService<IRedisKeyFactory>();
+        
         var redisConnection = ConnectionMultiplexer.Connect(redisConnectionString);
 
 
@@ -68,12 +73,12 @@ public static class DependencyInjection
         services.AddSingleton<IAuditLogger>(provider =>
                 new AuditLogger(
                     provider.GetRequiredService<IConnectionMultiplexer>(),
-                    BuildAuditPrefix(redisConfig)));
+                    keyFactory.CreateAuditPrefix()));
 
         services.AddStackExchangeRedisCache(options =>
         {
             options.Configuration = redisConnectionString;
-            options.InstanceName = BuildInstanceNamePrefix(redisConfig);
+            options.InstanceName = keyFactory.CreateGlobalInstancePrefix();
         });
 
 
@@ -81,21 +86,6 @@ public static class DependencyInjection
         services.AddResponseCaching();
 
         return services;
-    }
-
-    private static RedisKey BuildAuditPrefix(IOptions<RedisConfig> redisConfig)
-    {
-        return new StringBuilder(BuildInstanceNamePrefix(redisConfig))
-                    .Append(redisConfig.Value.AuditListKey)
-                    .ToString();
-    }
-
-    private static string BuildInstanceNamePrefix(IOptions<RedisConfig> redisConfig)
-    {
-        return new StringBuilder()
-                    .Append(redisConfig.Value.ApplicationPrefixKey)
-                    .Append(redisConfig.Value.KeyDelimiter)
-                    .ToString();
     }
 
     public static IServiceCollection AddDbContext(
@@ -119,7 +109,7 @@ public static class DependencyInjection
             var factory = scope.ServiceProvider.GetRequiredService<INewsLetterSubscriptionFactory>();
             if (!context.NewsLetterSubscription.Any())
             {
-                var fakeContacts = GenerateFakeContacts(50_000, factory);
+                var fakeContacts = GenerateFakeContacts(500_000, factory);
                 context.AddRange(fakeContacts);
                 context.SaveChanges();
             }
