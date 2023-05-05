@@ -1,5 +1,9 @@
+using Ardalis.ApiEndpoints;
+using FluentValidation;
+using LuzInga.Application.Abstractions.Messaging;
 using LuzInga.Application.Common.CQRS;
 using LuzInga.Domain;
+using LuzInga.Domain.SharedKernel.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +11,9 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace LuzInga.Application.Usecases.NewsletterSubscription.ConfirmEmail;
 
-public class ConfirmEmailHandler : CommandHandler<ConfirmEmailCommand>
+public class ConfirmEmailHandler : EndpointBaseAsync
+    .WithRequest<ConfirmEmailCommand>
+    .WithActionResult 
 {
     private readonly IMediator mediator;
 
@@ -34,8 +40,7 @@ public class ConfirmEmailHandler : CommandHandler<ConfirmEmailCommand>
     }
 }
 
-
-public class ConfirmEmailCommandHandler : IRequestHandler<ConfirmEmailCommand>
+public sealed class ConfirmEmailCommandHandler : ICommandHandler<ConfirmEmailCommand>
 {
     private readonly ILuzIngaContext context;
 
@@ -49,15 +54,29 @@ public class ConfirmEmailCommandHandler : IRequestHandler<ConfirmEmailCommand>
         var subscription = context.NewsLetterSubscription.FirstOrDefault(d => d.ConfirmationCode == request.ConfirmationCode);
 
         if(subscription is null)
-            throw new Exception("Subscription not found, review your confirmationCode!");
+            throw new GlobalApplicationException(ApplicationExceptionType.Validation, "Subscription not found, review your confirmationCode!");
 
         subscription.ConfirmEmail();
-        await context.SaveChangesAsync();
         await Unit.Task;
     }
 }
 
 
-public class ConfirmEmailCommand : IRequest {
+public sealed class ConfirmEmailCommandValidator : AbstractValidator<ConfirmEmailCommand>
+{
+
+    public ConfirmEmailCommandValidator()
+    {
+        RuleFor(d => d.ConfirmationCode)
+            .NotNull();
+
+        RuleFor(d => d.ConfirmationCode)
+            .NotEmpty();
+    }
+    
+}
+
+
+public class ConfirmEmailCommand : ICommand {
     public string ConfirmationCode { get; set; }
 }

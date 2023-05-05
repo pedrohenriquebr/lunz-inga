@@ -6,10 +6,10 @@ namespace LuzInga.Infra.Services;
 
 public class NewsLetterSubscriptionFactory : INewsLetterSubscriptionFactory
 {
-    private readonly ISubscriptionTokenProvider tokenProvider;
+    private readonly ISubscriptionConfirmationCodeFactory tokenProvider;
     private readonly ISubscriptionIdGenerator idGenerator;
 
-    public NewsLetterSubscriptionFactory(ISubscriptionTokenProvider tokenProvider, ISubscriptionIdGenerator idGenerator)
+    public NewsLetterSubscriptionFactory(ISubscriptionConfirmationCodeFactory tokenProvider, ISubscriptionIdGenerator idGenerator)
     {
         this.tokenProvider = tokenProvider;
         this.idGenerator = idGenerator;
@@ -18,7 +18,7 @@ public class NewsLetterSubscriptionFactory : INewsLetterSubscriptionFactory
     public NewsLetterSubscription CreateSubscription(string name, string email)
     {
         var id = idGenerator.NextId();
-        var confirmCode = tokenProvider.GenerateConfirmationCode(id);
+        var confirmCode = tokenProvider.Generate(id);
         var expirationDate = DateTimeProvider.Now + TimeSpan.FromHours(Constants.CONFIRMATION_TOKEN_EXPIRATION_HOURS);
 
         return new NewsLetterSubscription(

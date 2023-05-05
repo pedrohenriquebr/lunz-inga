@@ -2,7 +2,7 @@ using LuzInga.Domain.ValueObjects;
 
 namespace LuzInga.Domain.Services;
 
-public interface ISubscriptionTokenProvider
+public interface ISubscriptionConfirmationCodeFactory
 {
-    public string GenerateConfirmationCode(SubscriptionId id);
+    public string Generate(SubscriptionId id);
 }

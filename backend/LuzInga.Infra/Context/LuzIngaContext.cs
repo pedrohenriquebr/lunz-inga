@@ -14,9 +14,9 @@ using LuzInga.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using LuzInga.Infra.Context.ValueConverters;
 
-public class LuzIngaContext : DbContext, ILuzIngaContext
+public sealed class LuzIngaContext : DbContext, ILuzIngaContext, IUnitOfWork
 {
-    private IMediator mediator;
+    private IMediator? mediator = null;
 
     public LuzIngaContext(DbContextOptions<LuzIngaContext> options)
         : base(options) { }
@@ -46,13 +46,12 @@ public class LuzIngaContext : DbContext, ILuzIngaContext
     {
         configurationBuilder.Properties<SubscriptionId>()
             .HaveConversion<SubscriptionIdValueConverter>();
-
         base.ConfigureConventions(configurationBuilder);
     }
 
     public async Task<bool> SaveChangesAsync(CancellationToken token = default){
         var result = await base.SaveChangesAsync(token);
-        await this.mediator.DispatchDomainEventsAsync(this);
+        await mediator?.DispatchDomainEventsAsync(this);
         return true;
     }
 }

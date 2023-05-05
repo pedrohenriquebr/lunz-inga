@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json.Nodes;
 using LuzInga.Application.Configuration;
 using LuzInga.Application.Extensions;
+using LuzInga.Application.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
@@ -12,15 +13,18 @@ namespace LuzInga.Api.Middlewares
 
     public class CachingMiddleware
     {
+        private const string CACHING_PREFIX = "Caching";
         private readonly RequestDelegate next;
         private readonly IDistributedCache cache;
         private readonly IOptions<RedisConfig> config;
+        private readonly IKeyFactory keyFactory;
 
-        public CachingMiddleware(RequestDelegate next, IDistributedCache cache, IOptions<RedisConfig> config)
+        public CachingMiddleware(RequestDelegate next, IDistributedCache cache, IOptions<RedisConfig> config, IKeyFactory keyFactory)
         {
             this.next = next;
             this.cache = cache;
             this.config = config;
+            this.keyFactory = keyFactory;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -57,14 +61,17 @@ namespace LuzInga.Api.Middlewares
                 {
                     await next(context);
 
-                    // Read the response body from the stream
-                    var responseContent = await ReadResponseBodyAsync(context.Response);
+                    if(context.Response.Headers.CacheControl.Any()){
+                        // Read the response body from the stream
+                        var responseContent = await ReadResponseBodyAsync(context.Response);
 
-                    // Cache the response body
-                    await this.cache.SetRequestAsync(key, responseContent);
+                        // Cache the response body
+                        await this.cache.SetRequestAsync(key, responseContent);
 
-                    // Write the response body to the original stream
-                    responseBodyStream.Seek(0, SeekOrigin.Begin);
+                        // Write the response body to the original stream
+                        responseBodyStream.Seek(0, SeekOrigin.Begin);
+                    }
+
                     await responseBodyStream.CopyToAsync(originalBodyStream);
                 }
                 finally
@@ -78,6 +85,8 @@ namespace LuzInga.Api.Middlewares
         private string CreateKey(PathString path, IQueryCollection query)
         {
             var sb = new StringBuilder();
+            sb.Append(CACHING_PREFIX);
+            sb.Append(config.Value.KeyDelimiter);
             sb.Append(path);
 
             foreach (var item in query)
@@ -117,4 +126,10 @@ namespace LuzInga.Api.Middlewares
         }
 
     }
+
+
+    public sealed record CacheEntry (
+        DateTime CreatedAt,
+        string Payload 
+    );
 }

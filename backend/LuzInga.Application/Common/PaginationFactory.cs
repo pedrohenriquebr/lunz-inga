@@ -33,6 +33,7 @@ public sealed class Paginator
             NexPage = (int)(request.Offset < (totalItems / request.Limit) ? request.Offset + 1 : request.Offset),
             PreviousPage = (int)(request.Offset > MIN_PAGE ? request.Offset - 1 : MIN_PAGE),
             LastPage = request.Offset >= (totalItems / request.Limit),
+            Page = Math.Clamp(request.Offset ?? 0, MIN_PAGE, (int)(totalItems / request.Limit))
         };
     }
 }

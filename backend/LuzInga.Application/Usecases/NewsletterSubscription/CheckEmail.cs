@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Ardalis.ApiEndpoints;
+using FluentValidation;
+using LuzInga.Application.Abstractions.Messaging;
 using LuzInga.Application.Services;
 using LuzInga.Domain;
 using MediatR;
@@ -25,7 +27,6 @@ public class CheckEmailHandler
     }
 
     [HttpGet(Strings.API_ROUTE_NEWSLETTER_CHECK_EMAIL+"/{email}")]
-    [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
     [SwaggerOperation(
         Summary = "Check if emails exists in the newslettersubscription table on database",
         Description = "Return if exists email",
@@ -42,8 +43,20 @@ public class CheckEmailHandler
     }
 }
 
+public class CheckEmailQueryValidator: AbstractValidator<CheckEmailQuery>
+{
+    
+    public CheckEmailQueryValidator()
+    {
+        RuleFor(d => d.Email)
+            .NotNull();
+        
+        RuleFor(d => d.Email)
+            .NotEmpty();
+    }
+}
 
-public class CheckEmailQueryHandler : IRequestHandler<CheckEmailQuery, CheckEmailQueryResponse>
+public class CheckEmailQueryHandler : IQueryHandler<CheckEmailQuery, CheckEmailQueryResponse>
 {
 
     private readonly ILuzIngaContext context;
@@ -73,7 +86,7 @@ public class CheckEmailQueryHandler : IRequestHandler<CheckEmailQuery, CheckEmai
 
 public sealed record CheckEmailQuery (
     string Email
-) : IRequest<CheckEmailQueryResponse>;
+) : IQuery<CheckEmailQueryResponse>;
 
 
 public sealed record CheckEmailQueryResponse

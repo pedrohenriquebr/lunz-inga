@@ -29,7 +29,6 @@ public static class DependencyInjection
                         .AddConfiguration(builder.Configuration)
                         .AddRedis(builder.Configuration)
                         .AddServices()
-                        .AddMediator()
                         .AddDbContext(builder.Configuration)
                         ;
         return builder;
@@ -38,27 +37,18 @@ public static class DependencyInjection
     public static IServiceCollection AddConfiguration(this IServiceCollection collection, IConfiguration config)
     {
         return collection
-                    .Configure<RedisConfig>(opt => 
+                    .Configure<RedisConfig>(opt =>
                         config.GetSection(nameof(RedisConfig))
                                 .Bind(opt));
     }
 
-    public static IServiceCollection AddMediator(this IServiceCollection collection)
-    {
-        var assembly = AppDomain.CurrentDomain.Load("LuzInga.Application");
-        collection.AddMediatR(c =>
-        {
-            c.RegisterServicesFromAssembly(assembly);
-        });
-
-        return collection;
-    }
+    
 
     public static IServiceCollection AddServices(this IServiceCollection collection)
         => collection
                 .AddScoped<ISubscriptionIdGenerator, SubscriptionIdGenerator>()
                 .AddScoped<INewsLetterSubscriptionFactory, NewsLetterSubscriptionFactory>()
-                .AddScoped<ISubscriptionTokenProvider, SubscriptionTokenProvider>();
+                .AddScoped<ISubscriptionConfirmationCodeFactory, DefaultSubscriptionConfirmationCodeFactory>();
 
 
     public static IServiceCollection AddRedis(
@@ -75,11 +65,11 @@ public static class DependencyInjection
 
 
         services.AddSingleton<IConnectionMultiplexer>(redisConnection);
-        services.AddSingleton<IAuditLogger>(provider => 
+        services.AddSingleton<IAuditLogger>(provider =>
                 new AuditLogger(
                     provider.GetRequiredService<IConnectionMultiplexer>(),
                     BuildAuditPrefix(redisConfig)));
-         
+
         services.AddStackExchangeRedisCache(options =>
         {
             options.Configuration = redisConnectionString;
@@ -87,7 +77,8 @@ public static class DependencyInjection
         });
 
 
-
+        services.AddSession();
+        services.AddResponseCaching();
 
         return services;
     }
@@ -120,12 +111,6 @@ public static class DependencyInjection
             options => options.UseSqlServer(connectionString)
         );
 
-        services.AddDbContext<LuzIngaContext>(options =>
-            options
-                .UseSqlServer(connectionString)
-                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking),
-            ServiceLifetime.Transient);
-
 
         // Generate fake Contacts and add to LuzIngaContext
         using (var scope = services.BuildServiceProvider().CreateScope())
@@ -134,13 +119,17 @@ public static class DependencyInjection
             var factory = scope.ServiceProvider.GetRequiredService<INewsLetterSubscriptionFactory>();
             if (!context.NewsLetterSubscription.Any())
             {
-                var fakeContacts = GenerateFakeContacts(1_000, factory);
+                var fakeContacts = GenerateFakeContacts(50_000, factory);
                 context.AddRange(fakeContacts);
                 context.SaveChanges();
             }
         }
 
         services.AddScoped<ILuzIngaContext>(sp =>
+                sp.GetRequiredService<LuzIngaContext>()
+        );
+
+        services.AddScoped<IUnitOfWork>(sp =>
                 sp.GetRequiredService<LuzIngaContext>()
                 .WithMediator(sp.GetRequiredService<IMediator>())
         );

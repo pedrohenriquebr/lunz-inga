@@ -5,9 +5,9 @@ using LuzInga.Domain.ValueObjects;
 
 namespace LuzInga.Infra.Services;
 
-public class SubscriptionTokenProvider : ISubscriptionTokenProvider
+public class DefaultSubscriptionConfirmationCodeFactory : ISubscriptionConfirmationCodeFactory
 {
-    public string GenerateConfirmationCode(SubscriptionId id)
+    public string Generate(SubscriptionId id)
     {
         string secretKey = Constants.CONFIRMATION_TOKEN_SECRET_KEY;
         string confirmationCode = "";

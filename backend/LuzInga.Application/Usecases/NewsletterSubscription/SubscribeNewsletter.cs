@@ -6,11 +6,13 @@ using LuzInga.Application.Common.CQRS;
 using MediatR;
 using LuzInga.Domain;
 using LuzInga.Domain.Factories;
+using LuzInga.Application.Abstractions.Messaging;
+using FluentValidation;
 
 namespace LuzInga.Application.Usecases.NewsletterSubscription.SubscribeNewsLetter;
 
-public class SubscribeNewsLetterActionHandler
-    : CommandHandler<SubscribeNewsLetterRequest>
+public sealed class SubscribeNewsLetterActionHandler
+    : CommandHandler<SubscribeNewsLetterCommand>
 {
     private readonly IBloomFilter bloomFilter;
     private readonly IMediator mediator;
@@ -29,37 +31,40 @@ public class SubscribeNewsLetterActionHandler
         Tags = new[] { "NewsLetterSubscription" }
     )]
     public override async Task<ActionResult> HandleAsync(
-        [FromBody] SubscribeNewsLetterRequest request,
+        [FromBody] SubscribeNewsLetterCommand request,
         CancellationToken cancellationToken = default
     )
     {
-        try
-        {
-            if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Name))
-                return BadRequest();
-            
-            await mediator.Send(request);
-            bloomFilter.Add(request.Email);
-        }
-        catch (Exception ex) { 
-            return StatusCode(StatusCodes.Status500InternalServerError, new {
-                error = ex.Message,
-                details = ex.StackTrace
-            });
-        }
+        await mediator.Send(request);
+        bloomFilter.Add(request.Email);
 
         return NoContent();
     }
 }
 
-public sealed class SubscribeNewsLetterRequest : IRequest
+
+
+public sealed class SubscribeNewsletterValidator : AbstractValidator<SubscribeNewsLetterCommand>
+
 {
-    public string Email { get; set; }
-    public string Name { get; set; }
+    public SubscribeNewsletterValidator()
+    {
+        RuleFor(x => x.Email)
+            .NotNull();
+
+        RuleFor(x => x.Email)
+            .NotEmpty();
+
+        RuleFor(x => x.Name)
+            .NotNull();
+
+        RuleFor(x => x.Name)
+            .NotEmpty();
+    }
 }
 
 
-public class SubscribeNewsletterHandler : IRequestHandler<SubscribeNewsLetterRequest>
+public sealed class SubscribeNewsletterHandler : ICommandHandler<SubscribeNewsLetterCommand>
 {
     private readonly ILuzIngaContext context;
     private readonly INewsLetterSubscriptionFactory factory;
@@ -69,12 +74,16 @@ public class SubscribeNewsletterHandler : IRequestHandler<SubscribeNewsLetterReq
         this.factory = factory;
     }
 
-    public async Task Handle(SubscribeNewsLetterRequest request, CancellationToken cancellationToken)
+    public async Task Handle(SubscribeNewsLetterCommand request, CancellationToken cancellationToken)
     {
         var newSubscription = factory.CreateSubscription(request.Name, request.Email);
         await context.NewsLetterSubscription.AddAsync(newSubscription);
-        await context.SaveChangesAsync();
 
         await Unit.Task;
     }
+}
+public sealed class SubscribeNewsLetterCommand : ICommand
+{
+    public string Email { get; set; }
+    public string Name { get; set; }
 }

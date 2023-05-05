@@ -42,10 +42,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseGlobalExceptionHandler();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseResponseCachingEx();
+app.UseResponseCaching();
+app.UseResponseCachingExtended();
+app.UseHttpLogging();
 app.UseLogging();
+app.UseSession();
 app.MapControllers();
 app.Run();
