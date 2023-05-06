@@ -8,6 +8,8 @@ reset-db:
 	docker-compose stop db
 	docker-compose rm -v db
 
+stop-db:
+	docker-compose stop db
 
 init-db:
 	docker-compose build db
@@ -32,6 +34,9 @@ init-load-test: init-monitoring
 
 init-api: build-api init-databases
 	docker-compose up -d api
-	
+
+stop-api: stop-db stop-redis
+	docker-compose stop api
+
 build-api: 
 	docker-compose build api
