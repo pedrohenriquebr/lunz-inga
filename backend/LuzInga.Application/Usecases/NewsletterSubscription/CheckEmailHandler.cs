@@ -16,7 +16,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace LuzInga.Application.Usecases.NewsletterSubscription.CheckEmail;
 
 
-
+[Route(Strings.API_BASEURL_NEWSLETTER_SUBSCRIPTION)]
 public class CheckEmailHandler
     : BaseApiQueryHandler<string, CheckEmailQueryResponse>
 {
@@ -27,7 +27,7 @@ public class CheckEmailHandler
         this.mediator = mediator;
     }
 
-    [HttpGet(Strings.API_ROUTE_NEWSLETTER_CHECK_EMAIL+"/{email}")]
+    [HttpGet("check-email/{email}")]
     [SwaggerOperation(
         Summary = "Check if emails exists in the newslettersubscription table on database",
         Description = "Return if exists email",

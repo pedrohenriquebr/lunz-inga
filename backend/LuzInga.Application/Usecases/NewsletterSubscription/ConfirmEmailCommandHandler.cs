@@ -7,6 +7,7 @@ using MediatR;
 
 namespace LuzInga.Application.Usecases.NewsletterSubscription.ConfirmEmail;
 
+
 public sealed class ConfirmEmailCommandHandler : ICommandHandler<ConfirmEmailCommand>
 {
     private readonly ILuzIngaContext context;

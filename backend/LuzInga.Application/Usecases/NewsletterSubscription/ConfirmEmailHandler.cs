@@ -6,6 +6,8 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace LuzInga.Application.Usecases.NewsletterSubscription.ConfirmEmail;
 
+
+[Route(Strings.API_BASEURL_NEWSLETTER_SUBSCRIPTION)]
 public class ConfirmEmailHandler : BaseApiCommandHandler<ConfirmEmailCommand>
 {
     private readonly IMediator mediator;
@@ -15,7 +17,7 @@ public class ConfirmEmailHandler : BaseApiCommandHandler<ConfirmEmailCommand>
         this.mediator = mediator;
     }
     
-    [HttpPost(Strings.API_ROUTE_NEWSLETTER_CONFIRM_EMAIL)]
+    [HttpPost("confirm-email")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [SwaggerOperation(
         Summary = "Confirm email",

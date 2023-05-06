@@ -11,6 +11,9 @@ using FluentValidation;
 
 namespace LuzInga.Application.Usecases.NewsletterSubscription.SubscribeNewsLetter;
 
+
+
+[Route(Strings.API_BASEURL_NEWSLETTER_SUBSCRIPTION)]
 public sealed class SubscribeNewsLetterActionHandler
     : BaseApiCommandHandler<SubscribeNewsLetterCommand>
 {
@@ -23,7 +26,7 @@ public sealed class SubscribeNewsLetterActionHandler
         this.mediator = mediator;
     }
 
-    [HttpPost(Strings.API_BASEURL_NEWSLETTER_SUBSCRIPTION)]
+    [HttpPost]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [SwaggerOperation(
         Summary = "Subscribe to newsletter",

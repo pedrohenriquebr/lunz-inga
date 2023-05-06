@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 namespace LuzInga.Application.Usecases.NewsletterSubscription.ListSubscriptions;
 
+
+[Route(Strings.API_BASEURL_NEWSLETTER_SUBSCRIPTION)]
 public sealed class ListSubscriptionsHandler : BaseApiQueryHandler<ListSubscriptionsQueryObject, PaginatedResponse<SubscriptionResponse>>
 {
     private readonly IMediator mediator;
@@ -15,7 +17,7 @@ public sealed class ListSubscriptionsHandler : BaseApiQueryHandler<ListSubscript
 
     }
 
-    [HttpGet(Strings.API_BASEURL_NEWSLETTER_SUBSCRIPTION)]
+    [HttpGet]
     [ResponseCache(Duration = 30)]
     [SwaggerOperation(
         Summary = "Paginate and filter all newslettersubscription",
