@@ -29,9 +29,6 @@ init-databases: init-db init-redis
 init-monitoring:
 	docker-compose up -d  grafana influxdb telegraf
 
-init-load-test: init-monitoring
-	docker-compose run k6 run /scripts/stages.js
-
 init-api: build-api init-databases
 	docker-compose up -d api
 
@@ -40,3 +37,6 @@ stop-api: stop-db stop-redis
 
 build-api: 
 	docker-compose build api
+
+init-load-test: init-api init-monitoring
+	docker-compose run k6 run /scripts/stages.js
