@@ -45,5 +45,23 @@ namespace LuzInga.Api
                     });
                 }
             }));
+
+        public static WebApplicationBuilder AddStartupHandler(this WebApplicationBuilder app){
+
+            var configuration = app.Configuration;
+            Console.WriteLine("Environment variables:");
+            foreach (string envVar in Environment.GetEnvironmentVariables().Keys)
+            {
+                Console.WriteLine($"\t{envVar}: {Environment.GetEnvironmentVariable(envVar)}");
+            }
+
+            Console.WriteLine("\nAppSettings variables:");
+            foreach (var appSetting in configuration.AsEnumerable())
+            {
+                Console.WriteLine($"\t{appSetting.Key}: {appSetting.Value}");
+            }
+
+            return app;
+        }
     }
 }

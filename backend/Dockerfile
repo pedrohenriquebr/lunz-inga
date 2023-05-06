@@ -5,11 +5,17 @@ WORKDIR /app
 COPY ./*.sln .
 COPY ./LuzInga.Api/*.csproj ./LuzInga.Api/
 COPY ./LuzInga.Application/*.csproj ./LuzInga.Application/
+COPY ./LuzInga.Domain/*.csproj ./LuzInga.Domain/
+COPY ./LuzInga.Infra/*.csproj ./LuzInga.Infra/
+COPY ./LuzInga.UnitTests/*.csproj ./LuzInga.UnitTests/
 RUN dotnet restore
 
 # Copy everything else and build
 COPY ./LuzInga.Api/. ./LuzInga.Api/
 COPY ./LuzInga.Application/. ./LuzInga.Application/
+COPY ./LuzInga.Domain/. ./LuzInga.Domain/
+COPY ./LuzInga.Infra/. ./LuzInga.Infra/
+COPY ./LuzInga.UnitTests/. ./LuzInga.UnitTests/
 WORKDIR /app/LuzInga.Api
 RUN dotnet publish -c Release -o out
 

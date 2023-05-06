@@ -12,7 +12,7 @@ using FluentValidation;
 namespace LuzInga.Application.Usecases.NewsletterSubscription.SubscribeNewsLetter;
 
 public sealed class SubscribeNewsLetterActionHandler
-    : CommandHandler<SubscribeNewsLetterCommand>
+    : BaseApiCommandHandler<SubscribeNewsLetterCommand>
 {
     private readonly IBloomFilter bloomFilter;
     private readonly IMediator mediator;

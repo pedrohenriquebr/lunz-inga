@@ -29,6 +29,7 @@ builder.Configuration
 
 
 builder
+    .AddStartupHandler()
     .AddInfra()
     .AddDomain()
     .AddApplication();

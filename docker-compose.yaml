@@ -8,16 +8,21 @@ volumes:
 networks:
   monitoring:
   k6:
+  luzinga:
 
 services:
+
   api:
     image: luzinga-api
     build:
       context: ./backend
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://api:3000
     ports:
-      - 80:80
+      - 3000:3000
+    networks:
+      - luzinga
   db:
     image: luzinga-mssql
     container_name: db
@@ -30,6 +35,7 @@ services:
       - /var/lib/redis:/data
     networks:
       - monitoring
+      - luzinga
     healthcheck:
         test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $$SA_PASSWORD -Q 'SELECT 1' || exit 1"]
         interval: 10s
@@ -38,6 +44,7 @@ services:
         timeout: 3s
   redis:
     image: redis:latest
+    container_name: redis
     volumes:
       - redis_volume
     ports:
@@ -45,6 +52,8 @@ services:
     restart: always
     env_file:
       - .env
+    networks:
+      - luzinga
     command: ["redis-server","--save",
                               "60",
                               "1",
@@ -95,9 +104,10 @@ services:
     image: grafana/k6:latest
     networks:
       - k6
+      - luzinga
     ports:
       - "6565:6565"
     environment:
       - K6_OUT=influxdb=http://influxdb:8086/k6
     volumes:
-      - ./examples:/scripts
+      - ./k6-scripts:/scripts

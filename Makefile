@@ -29,3 +29,9 @@ init-monitoring:
 
 init-load-test: init-monitoring
 	docker-compose run k6 run /scripts/stages.js
+
+init-api: build-api init-databases
+	docker-compose up -d api
+	
+build-api: 
+	docker-compose build api
