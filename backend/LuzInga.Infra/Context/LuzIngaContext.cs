@@ -13,10 +13,12 @@ using System.Reflection;
 using LuzInga.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using LuzInga.Infra.Context.ValueConverters;
+using Microsoft.EntityFrameworkCore.Storage;
 
 public sealed class LuzIngaContext : DbContext, ILuzIngaContext, IUnitOfWork
 {
     private IMediator? mediator = null;
+    private IDbContextTransaction _transaction;
 
     public LuzIngaContext(DbContextOptions<LuzIngaContext> options)
         : base(options) { }
@@ -51,16 +53,28 @@ public sealed class LuzIngaContext : DbContext, ILuzIngaContext, IUnitOfWork
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
+        base.ConfigureConventions(configurationBuilder);
         configurationBuilder.Properties<SubscriptionId>()
             .HaveConversion<SubscriptionIdValueConverter>();
-        base.ConfigureConventions(configurationBuilder);
+        configurationBuilder.Properties<SubscriptionStatus>()
+            .HaveConversion<SubscriptionStatusValueConverter>();
     }
 
-    public async Task<bool> SaveChangesAsync(CancellationToken token = default)
+    public void BeginTransaction()
     {
-        var result = await base.SaveChangesAsync(token);
+        this._transaction = Database.BeginTransaction();
+    }
+
+    public async Task CommitTransactionAsync()
+    {
+        await this.SaveChangesAsync(default);
+        await this._transaction.CommitAsync();
         await mediator?.DispatchDomainEventsAsync(this);
-        return true;
+    }
+
+    public async Task RollbackAsync()
+    {
+        await this._transaction.RollbackAsync();
     }
 }
 

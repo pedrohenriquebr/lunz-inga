@@ -19,14 +19,11 @@ public class NewsLetterSubscriptionFactory : INewsLetterSubscriptionFactory
     {
         var id = idGenerator.NextId();
         var confirmCode = tokenProvider.Generate(id);
-        var expirationDate = DateTimeProvider.Now + TimeSpan.FromHours(Constants.CONFIRMATION_TOKEN_EXPIRATION_HOURS);
-
         return new NewsLetterSubscription(
             id,
             email,
             name,
-            confirmCode,
-            expirationDate
+            confirmCode
         );
     }
 }

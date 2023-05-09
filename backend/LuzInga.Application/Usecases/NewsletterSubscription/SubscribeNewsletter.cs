@@ -8,19 +8,20 @@ using LuzInga.Domain;
 using LuzInga.Domain.Factories;
 using LuzInga.Application.Abstractions.Messaging;
 using FluentValidation;
+using LuzInga.Domain.Services;
 
 namespace LuzInga.Application.Usecases.NewsletterSubscription.SubscribeNewsLetter;
 
 
 
 [Route(Strings.API_BASEURL_NEWSLETTER_SUBSCRIPTION)]
-public sealed class SubscribeNewsLetterActionHandler
+public sealed class SubscribeNewsLetterHandler
     : BaseApiCommandHandler<SubscribeNewsLetterCommand>
 {
     private readonly IBloomFilter bloomFilter;
     private readonly IMediator mediator;
 
-    public SubscribeNewsLetterActionHandler(IBloomFilter bloomFilter, IMediator mediator)
+    public SubscribeNewsLetterHandler(IBloomFilter bloomFilter, IMediator mediator)
     {
         this.bloomFilter = bloomFilter;
         this.mediator = mediator;
@@ -38,8 +39,8 @@ public sealed class SubscribeNewsLetterActionHandler
         CancellationToken cancellationToken = default
     )
     {
-        await mediator.Send(request);
         bloomFilter.Add(request.Email);
+        mediator.Enqueue(request);
 
         return NoContent();
     }
@@ -67,20 +68,20 @@ public sealed class SubscribeNewsletterValidator : AbstractValidator<SubscribeNe
 }
 
 
-public sealed class SubscribeNewsletterHandler : ICommandHandler<SubscribeNewsLetterCommand>
+public sealed class SubscribeNewsletterCommandHandler : ICommandHandler<SubscribeNewsLetterCommand>
 {
-    private readonly ILuzIngaContext context;
+    private readonly INewsLetterSubscriptionRepository repo;
     private readonly INewsLetterSubscriptionFactory factory;
-    public SubscribeNewsletterHandler(ILuzIngaContext contactService, INewsLetterSubscriptionFactory factory)
+    public SubscribeNewsletterCommandHandler(INewsLetterSubscriptionRepository contactService, INewsLetterSubscriptionFactory factory)
     {
-        this.context = contactService;
+        this.repo = contactService;
         this.factory = factory;
     }
 
     public async Task Handle(SubscribeNewsLetterCommand request, CancellationToken cancellationToken)
     {
         var newSubscription = factory.CreateSubscription(request.Name, request.Email);
-        await context.NewsLetterSubscription.AddAsync(newSubscription);
+        await repo.Save(newSubscription);
 
         await Unit.Task;
     }

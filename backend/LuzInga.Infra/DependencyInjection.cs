@@ -1,5 +1,6 @@
 using System.Text;
 using Bogus;
+using Hangfire;
 using LuzInga.Application;
 using LuzInga.Application.Configuration;
 using LuzInga.Application.Services;
@@ -8,15 +9,17 @@ using LuzInga.Domain.Entities;
 using LuzInga.Domain.Factories;
 using LuzInga.Domain.Services;
 using LuzInga.Domain.SharedKernel;
+using LuzInga.Domain.ValueObjects;
 using LuzInga.Infra.Context;
 using LuzInga.Infra.Services;
-using LuzInga.Infra.Services.Redis;
+using LuzInga.Infra.Services.Repositories;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using StackExchange.Redis;
 
 namespace LuzInga.Infra;
@@ -29,7 +32,20 @@ public static class DependencyInjection
                         .AddConfiguration(builder.Configuration)
                         .AddServices()
                         .AddRedis(builder.Configuration)
-                        .AddDbContext(builder.Configuration);
+                        .AddDbContext(builder.Configuration)
+                        .AddRepositories()
+                        .AddHangfire(c => {
+                            var serializerOptions = new JsonSerializerSettings(){
+                                TypeNameHandling = TypeNameHandling.All,
+                                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                            };
+
+                            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+                            c.UseSqlServerStorage(connectionString);
+                            c.UseSerializerSettings(serializerOptions);
+                        })
+                        .AddHangfireServer();
+
         return builder;
     }
 
@@ -38,6 +54,9 @@ public static class DependencyInjection
         return collection
                     .Configure<RedisConfig>(opt =>
                         config.GetSection(nameof(RedisConfig))
+                                .Bind(opt))
+                    .Configure<EmailProviderConfig>(opt => 
+                            config.GetSection(nameof(EmailProviderConfig))
                                 .Bind(opt));
     }
 
@@ -48,8 +67,8 @@ public static class DependencyInjection
                 .AddSingleton<IRedisKeyFactory, RedisKeyFactory>()
                 .AddScoped<ISubscriptionIdGenerator, SubscriptionIdGenerator>()
                 .AddScoped<INewsLetterSubscriptionFactory, NewsLetterSubscriptionFactory>()
-                .AddScoped<ISubscriptionConfirmationCodeFactory, DefaultSubscriptionConfirmationCodeFactory>();
-
+                .AddScoped<ISubscriptionConfirmationCodeFactory, DefaultSubscriptionConfirmationCodeFactory>()
+                .AddTransient<IEmailProvider, EmailProvider>();
 
     public static IServiceCollection AddRedis(
         this IServiceCollection services,
@@ -87,6 +106,14 @@ public static class DependencyInjection
 
         return services;
     }
+
+    public static IServiceCollection AddRepositories(this IServiceCollection services)
+    {
+
+        return services
+            .AddScoped<INewsLetterSubscriptionRepository, NewsLetterSubscriptionRepository>();
+    }
+
 
     public static IServiceCollection AddDbContext(
         this IServiceCollection services,

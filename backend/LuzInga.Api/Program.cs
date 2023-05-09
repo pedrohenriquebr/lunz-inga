@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using LuzInga.Domain.Entities;
 using LuzInga.Api;
 using System.Text;
+using Hangfire;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -59,10 +59,12 @@ app.UseGlobalExceptionHandler();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseHangfireDashboard();
 app.UseResponseCaching();
 app.UseResponseCachingExtended();
 app.UseHttpLogging();
 app.UseLogging();
 app.UseSession();
 app.MapControllers();
+app.MapHangfireDashboard();
 app.Run();

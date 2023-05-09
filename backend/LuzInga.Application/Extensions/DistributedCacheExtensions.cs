@@ -7,7 +7,7 @@ public static class DistributedCacheExtensions
 {
 
     private static int DEFAULT_EXPIRETIME = 60;
-    
+
     public static async Task SetRecordAsync<T>(this IDistributedCache cache,
         string recordId,
         T data,

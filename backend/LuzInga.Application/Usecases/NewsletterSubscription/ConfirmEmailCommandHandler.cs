@@ -2,24 +2,26 @@ using Ardalis.ApiEndpoints;
 using FluentValidation;
 using LuzInga.Application.Abstractions.Messaging;
 using LuzInga.Domain;
+using LuzInga.Domain.Services;
 using LuzInga.Domain.SharedKernel.Exceptions;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace LuzInga.Application.Usecases.NewsletterSubscription.ConfirmEmail;
 
 
 public sealed class ConfirmEmailCommandHandler : ICommandHandler<ConfirmEmailCommand>
 {
-    private readonly ILuzIngaContext context;
+    private readonly INewsLetterSubscriptionRepository repo;
 
-    public ConfirmEmailCommandHandler(ILuzIngaContext context)
+    public ConfirmEmailCommandHandler(INewsLetterSubscriptionRepository context)
     {
-        this.context = context;
+        this.repo = context;
     }
 
     public async Task Handle(ConfirmEmailCommand request, CancellationToken cancellationToken)
     {
-        var subscription = context.NewsLetterSubscription.FirstOrDefault(d => d.ConfirmationCode == request.ConfirmationCode);
+        var subscription = repo.GetByConfirmationId(request.ConfirmationCode);
 
         if(subscription is null)
             throw new GlobalApplicationException(ApplicationExceptionType.Validation, "Subscription not found, review your confirmationCode!");

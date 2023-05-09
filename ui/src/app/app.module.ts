@@ -9,6 +9,8 @@ import { LandingPageComponent } from './pages/landing-page/landing-page.componen
 import { MatDialogModule } from '@angular/material/dialog';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms'
+import { GlobalComponentsModule } from './features/global-components/global-components.module';
+import { NewsletterRoutingModule } from './pages/newsletter/newsletter-routing.module';
 
 @NgModule({
   declarations: [
@@ -22,7 +24,9 @@ import { FormsModule } from '@angular/forms'
     BrowserAnimationsModule,
     MatDialogModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    GlobalComponentsModule,
+    NewsletterRoutingModule
   ],
   bootstrap: [AppComponent]
 })

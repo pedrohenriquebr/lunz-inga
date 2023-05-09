@@ -11,5 +11,6 @@ namespace LuzInga.Application.Services
     public interface IAuditLogger
     { 
         public Task LogRecent(ApplicationAccessedEvent data);
+        public Task LogRecent(string request, object requestData, object? responseData);
     }
 }

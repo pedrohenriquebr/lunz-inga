@@ -1,3 +1,4 @@
+using Hangfire;
 using LuzInga.Application.Common.CQRS;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -8,16 +9,17 @@ namespace LuzInga.Application.Usecases.NewsletterSubscription.ConfirmEmail;
 
 
 [Route(Strings.API_BASEURL_NEWSLETTER_SUBSCRIPTION)]
-public class ConfirmEmailHandler : BaseApiCommandHandler<ConfirmEmailCommand>
-{
+public class ConfirmEmailHandler : BaseApiCommandHandler<string>
+{ 
+
     private readonly IMediator mediator;
 
     public ConfirmEmailHandler(IMediator mediator)
     {
         this.mediator = mediator;
     }
-    
-    [HttpPost("confirm-email")]
+
+    [HttpPost("confirm-email/{confirmationCode}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [SwaggerOperation(
         Summary = "Confirm email",
@@ -25,11 +27,13 @@ public class ConfirmEmailHandler : BaseApiCommandHandler<ConfirmEmailCommand>
         Tags = new[] { "NewsLetterSubscription" }
     )]
     public override async Task<ActionResult> HandleAsync(
-        [FromBody]
-        ConfirmEmailCommand request, CancellationToken cancellationToken = default)
+        [FromRoute]
+        string confirmationCode, CancellationToken cancellationToken = default)
     {
         
-        await this.mediator.Send<ConfirmEmailCommand>(request);
+        mediator.Enqueue(new ConfirmEmailCommand(){
+            ConfirmationCode = confirmationCode
+        });
 
         return NoContent();
     }

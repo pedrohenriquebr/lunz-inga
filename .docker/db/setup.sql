@@ -18,7 +18,8 @@ BEGIN
         [UnsubscriptionReason] VARCHAR(50) NULL, 
         [DateTimeConfirmed] DATETIME NULL,
         [DateTimeUnsubscribed] DATETIME NULL,
-        [DateTimeReactivated] DATETIME NULL
+        [DateTimeReactivated] DATETIME NULL,
+        [Status] VARCHAR(30) NOT NULL
         CONSTRAINT [PK_NewsLetterSubscription] PRIMARY KEY CLUSTERED 
     (
         [NewsLetterSubscriptionId] ASC

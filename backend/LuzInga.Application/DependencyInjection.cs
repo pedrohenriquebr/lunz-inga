@@ -30,6 +30,7 @@ public static class DependencyInjection
         collection
         .AddMediatR(c =>c.RegisterServicesFromAssembly(assembly))
         .AddValidatorsFromAssembly(assembly)
+        .AddTransient(typeof(IPipelineBehavior<,>), typeof(RecentLoggingBehavior<,>))
         .AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>))
         .AddTransient(typeof(IPipelineBehavior<,>), typeof(UnitOfWorkBehavior<,>));
 

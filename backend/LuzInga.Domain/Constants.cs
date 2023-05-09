@@ -1,4 +1,4 @@
-namespace LuzInga.Infra;
+namespace LuzInga.Domain;
 
 
 public static class Constants 

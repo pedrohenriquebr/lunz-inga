@@ -22,7 +22,10 @@ namespace LuzInga.Api
             {
                 var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
 
-                var originalException = exceptionHandlerPathFeature.Error;
+                var originalException = exceptionHandlerPathFeature?.Error;
+
+                if(originalException is null)
+                    return;
 
                 if (originalException is GlobalApplicationException globalException)
                 {
@@ -41,7 +44,8 @@ namespace LuzInga.Api
                     await context.Response.WriteAsJsonAsync(new
                     {
                         Type = ApplicationExceptionType.Application.ToString(),
-                        Message = originalException.Message
+                        Message = originalException.Message,
+                        Details  = originalException.StackTrace
                     });
                 }
             }));
@@ -49,6 +53,23 @@ namespace LuzInga.Api
         public static WebApplicationBuilder AddStartupHandler(this WebApplicationBuilder app){
 
             var configuration = app.Configuration;
+            Console.WriteLine("Environment variables:");
+            foreach (string envVar in Environment.GetEnvironmentVariables().Keys)
+            {
+                Console.WriteLine($"\t{envVar}: {Environment.GetEnvironmentVariable(envVar)}");
+            }
+
+            Console.WriteLine("\nAppSettings variables:");
+            foreach (var appSetting in configuration.AsEnumerable())
+            {
+                Console.WriteLine($"\t{appSetting.Key}: {appSetting.Value}");
+            }
+
+            return app;
+        }
+
+        public static IServiceCollection AddStartupHandler(this IServiceCollection app, IConfiguration configuration){
+
             Console.WriteLine("Environment variables:");
             foreach (string envVar in Environment.GetEnvironmentVariables().Keys)
             {

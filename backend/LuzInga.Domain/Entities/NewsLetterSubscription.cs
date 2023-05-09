@@ -11,12 +11,18 @@ namespace LuzInga.Domain.Entities;
 public sealed class NewsLetterSubscription : BaseEntity<SubscriptionId>, IAggregateRoot
 {
 
-
+    public void RefreshConfirmationCode(string confirmationCode)
+    {
+        this.ConfirmationCode = confirmationCode;
+        this.ConfirmationCodeExpiration = _generateConfirmationCodExpiration();
+        AddDomainEvent(new ConfirmationCodeRefreshedEvent(this.Id, this.ConfirmationCode, this.ConfirmationCodeExpiration));
+    }
+    
     public void ChangeEmailAddress(string email)
     {
         Email = email;
         DateTimeUpdated = DateTimeProvider.Now;
-        AddDomainEvent(new NewsLetterSubscriptionUpdatedEvent(this));
+        AddDomainEvent(new NewsLetterSubscriptionEmailChangedEvent(this));
     }
 
     public void ChangeName(string name)
@@ -32,6 +38,7 @@ public sealed class NewsLetterSubscription : BaseEntity<SubscriptionId>, IAggreg
         DateTimeUnsubscribed = DateTimeProvider.Now;
         UnsubscriptionReason = reason;
         IsConfirmed = false;
+        Status = SubscriptionStatus.Unsubscribed;
         AddDomainEvent(new NewsLetterSubscriptionUnsubscribedEvent(this));
     }
 
@@ -40,6 +47,7 @@ public sealed class NewsLetterSubscription : BaseEntity<SubscriptionId>, IAggreg
         DateTimeUpdated = DateTimeProvider.Now;
         DateTimeReactivated = DateTimeProvider.Now;
         IsConfirmed = true;
+        Status = SubscriptionStatus.Confirmed;
         AddDomainEvent(new NewsLetterSubscriptionReactivatedEvent(this));
     }
 
@@ -63,44 +71,21 @@ public sealed class NewsLetterSubscription : BaseEntity<SubscriptionId>, IAggreg
         DateTimeConfirmed = today;
         ConfirmationCode = null;
         ConfirmationCodeExpiration = null;
+        Status = SubscriptionStatus.Confirmed;
         AddDomainEvent(new NewsLetterSubscriptionConfirmedEmailEvent(this));
     }
 
 
-    public NewsLetterSubscription(Guid newsLetterSubscriptionId,
-                                        string email,
-                                        string name,
-                                        DateTime dateTimeCreated,
-                                        DateTime dateTimeUpdated,
-                                        bool isConfirmed,
-                                        string? confirmationCode,
-                                        DateTime? confirmationCodeExpiration,
-                                        string? unsubscriptionReason,
-                                        DateTime? dateTimeConfirmed,
-                                        DateTime? dateTimeUnsubscribed,
-                                        DateTime? dateTimeReactivated)
+    private DateTime _generateConfirmationCodExpiration()
     {
-        Id = newsLetterSubscriptionId;
-        Email = email;
-        Name = name;
-        DateTimeCreated = dateTimeCreated;
-        DateTimeUpdated = dateTimeUpdated;
-        IsConfirmed = isConfirmed;
-        ConfirmationCode = confirmationCode;
-        ConfirmationCodeExpiration = confirmationCodeExpiration;
-        UnsubscriptionReason = unsubscriptionReason;
-        DateTimeConfirmed = dateTimeConfirmed;
-        DateTimeUnsubscribed = dateTimeUnsubscribed;
-        DateTimeReactivated = dateTimeReactivated;
-
+        return DateTimeProvider.Now + TimeSpan.FromHours(Constants.CONFIRMATION_TOKEN_EXPIRATION_HOURS);
     }
 
-    public NewsLetterSubscription(SubscriptionId id,
-                                    string email,
-                                    string name,
-                                    string confirmationCode,
-                                    DateTime? confirmationCodeExpiration
-                                    )
+    protected NewsLetterSubscription()
+    {
+        
+    }
+    public NewsLetterSubscription(SubscriptionId id,string email,string name,string confirmationCode)
     {
 
         Id = id;
@@ -110,11 +95,12 @@ public sealed class NewsLetterSubscription : BaseEntity<SubscriptionId>, IAggreg
         DateTimeUpdated = DateTimeProvider.Now;
         IsConfirmed = false;
         ConfirmationCode = confirmationCode;
-        ConfirmationCodeExpiration = confirmationCodeExpiration;
+        ConfirmationCodeExpiration = _generateConfirmationCodExpiration();
         UnsubscriptionReason = null;
         DateTimeConfirmed = null;
         DateTimeUnsubscribed = null;
         DateTimeReactivated = null;
+        Status = SubscriptionStatus.Subscribed;
         AddDomainEvent(new NewsLetterSubscriptionCreatedEvent(this));
     }
 
@@ -130,12 +116,13 @@ public sealed class NewsLetterSubscription : BaseEntity<SubscriptionId>, IAggreg
     public DateTime? DateTimeConfirmed { get; private set; }
     public DateTime? DateTimeUnsubscribed { get; private set; }
     public DateTime? DateTimeReactivated { get; private set; }
+    public SubscriptionStatus Status { get; private set; }
 }
 
 
-public enum NewsLetterSubscriptionStatus : byte
+public enum SubscriptionStatus
 {
-    Created,
+    Subscribed,
     Confirmed,
     Unsubscribed
 }

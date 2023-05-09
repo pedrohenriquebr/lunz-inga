@@ -12,7 +12,7 @@ public interface ILuzIngaContext
 
 public interface IUnitOfWork 
 {
-    public Task<bool> SaveChangesAsync(CancellationToken token = default);
-    public DatabaseFacade Database { get; }
-    void Dispose();
+    public void BeginTransaction();
+    public Task CommitTransactionAsync();
+    public Task RollbackAsync();
 }

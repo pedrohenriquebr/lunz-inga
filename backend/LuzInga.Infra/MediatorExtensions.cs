@@ -1,3 +1,5 @@
+using Hangfire;
+using LuzInga.Application;
 using LuzInga.Domain.SharedKernel;
 using LuzInga.Infra.Context;
 using MediatR;
@@ -25,6 +27,6 @@ public static class MediatorExtensions
             .ForEach(e => e.ClearDomainEvents());
 
         foreach (var @event in domainEvents)
-            await mediator.Publish(@event);
+            mediator.EnqueueEvent(@event);
     }
 }

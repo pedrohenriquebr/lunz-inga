@@ -1,7 +1,6 @@
 using System.Text;
 using LuzInga.Application.Events;
 using LuzInga.Application.Services;
-using MediatR;
 
 namespace LuzInga.Api.Middlewares
 {

@@ -4,6 +4,7 @@ volumes:
   db_volume:
   grafana_data:
   influxdb_data:
+  redis_volume:
 
 networks:
   monitoring:
@@ -30,7 +31,6 @@ services:
       context: ./.docker/db
     ports:
       - "1433:1433"
-    restart: always
     volumes:
       - /var/lib/redis:/data
     networks:
@@ -49,7 +49,6 @@ services:
       - redis_volume
     ports:
       - "6379:6379"
-    restart: always
     env_file:
       - .env
     networks:
@@ -75,7 +74,6 @@ services:
       - influxdb
     networks:
       - monitoring
-    restart: always
 
   influxdb:
     image: influxdb:1.8
@@ -91,7 +89,6 @@ services:
     networks:
       - monitoring
       - k6
-    restart: always
   telegraf:
     container_name: telegraf
     image: telegraf:1.18
@@ -99,7 +96,6 @@ services:
       - monitoring
     volumes:
       - ./configs/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf
-    restart: always
   k6:
     image: grafana/k6:latest
     networks:

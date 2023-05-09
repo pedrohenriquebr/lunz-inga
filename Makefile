@@ -29,6 +29,9 @@ init-databases: init-db init-redis
 init-monitoring:
 	docker-compose up -d  grafana influxdb telegraf
 
+stop-monitoring:
+	docker-compose stop grafana influxdb telegraf
+
 init-api: build-api init-databases
 	docker-compose up -d api
 

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace LuzInga.Domain.SharedKernel;
 
@@ -9,12 +10,12 @@ public interface IEntity
     public void ClearDomainEvents();
 }
 
-
 public abstract class BaseEntity<Tkey> : IEntity
     where Tkey : IComparable
 {
     public Tkey Id { get; protected set; }
 
+    [JsonIgnore]
     private readonly List<BaseEvent> _domainEvents = new();
 
     [NotMapped]
